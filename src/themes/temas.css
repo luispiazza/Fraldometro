@@ -1,0 +1,146 @@
+/*
+ * Temas da página do bebê. Cada tema é só um conjunto de tokens sobre os mesmos
+ * componentes: muda cores, fontes, cantos, bordas e sombras; nunca a estrutura.
+ * Para criar um tema novo, copie um bloco, troque os valores e registre-o em ./index.ts.
+ */
+
+[data-tema="placar"] {
+  --t-bg: #16204a;
+  --t-surface: #1e2a5c;
+  --t-fg: #ffffff;
+  --t-muted: #9fb0ff;
+  --t-accent: #ffd23f;
+  --t-cta: #5ce1b4;
+  --t-cta-fg: #0d1533;
+  --t-track: #2c3a7a;
+  --t-fill: #ffd23f;
+  --t-line: #2c3a7a;
+  --t-display: var(--font-bricolage), var(--font-instrument-sans), sans-serif;
+  --t-body: var(--font-instrument-sans), sans-serif;
+  --t-dw: 800;
+  --t-ls: -0.03em;
+  --t-radius: 12px;
+  --t-border: 0px;
+  --t-shadow: none;
+  --t-cta-radius: 10px;
+  /* Placar enche em blocos, como um placar de estádio. */
+  --t-fill-img: repeating-linear-gradient(90deg, var(--t-fill) 0 calc(5% - 3px), transparent calc(5% - 3px) 5%);
+  --t-photo-radius: 12px;
+  --t-photo-w: 120px;
+  --t-photo-h: 140px;
+}
+
+[data-tema="diario"] {
+  --t-bg: #eef1ea;
+  --t-surface: #ffffff;
+  --t-fg: #2b2a33;
+  --t-muted: #6c6a75;
+  --t-accent: #5b3a6e;
+  --t-cta: #5b3a6e;
+  --t-cta-fg: #ffffff;
+  --t-track: #d6dccf;
+  --t-fill: #5b3a6e;
+  --t-line: #d6dccf;
+  --t-display: var(--font-young-serif), Georgia, serif;
+  --t-body: var(--font-instrument-sans), sans-serif;
+  --t-dw: 400;
+  --t-ls: 0;
+  --t-radius: 16px;
+  --t-border: 0px;
+  --t-shadow: 0 1px 2px rgba(43, 42, 51, 0.06);
+  --t-cta-radius: 999px;
+  --t-fill-img: none;
+  --t-photo-radius: 120px 120px 14px 14px;
+  --t-photo-w: 120px;
+  --t-photo-h: 140px;
+}
+
+[data-tema="recortes"] {
+  --t-bg: #fff6ef;
+  --t-surface: #ffffff;
+  --t-fg: #26211f;
+  --t-muted: #6b5f58;
+  --t-accent: #ff5a36;
+  --t-cta: #ff5a36;
+  --t-cta-fg: #ffffff;
+  --t-track: #ffe1d3;
+  --t-fill: #7cc6ff;
+  --t-line: #26211f;
+  --t-display: var(--font-bagel), var(--font-nunito), sans-serif;
+  --t-body: var(--font-nunito), sans-serif;
+  --t-dw: 400;
+  --t-ls: 0.005em;
+  --t-radius: 20px;
+  --t-border: 2.5px;
+  --t-shadow: 4px 4px 0 #26211f;
+  --t-cta-radius: 16px;
+  --t-fill-img: none;
+  --t-photo-radius: 50%;
+  --t-photo-w: 130px;
+  --t-photo-h: 130px;
+}
+
+.tema {
+  background: var(--t-bg);
+  color: var(--t-fg);
+  font-family: var(--t-body);
+}
+
+.tema-display {
+  font-family: var(--t-display);
+  font-weight: var(--t-dw);
+  letter-spacing: var(--t-ls);
+}
+
+.tema-card {
+  background: var(--t-surface);
+  border-radius: var(--t-radius);
+  border: var(--t-border) solid var(--t-line);
+  box-shadow: var(--t-shadow);
+}
+
+.tema-cta {
+  background: var(--t-cta);
+  color: var(--t-cta-fg);
+  border: var(--t-border) solid var(--t-line);
+  border-radius: var(--t-cta-radius);
+  box-shadow: var(--t-shadow);
+}
+
+.tema-track {
+  background: var(--t-track);
+  border-radius: var(--t-radius);
+  border: var(--t-border) solid var(--t-line);
+}
+
+.tema-fill {
+  background-color: var(--t-fill);
+  background-image: var(--t-fill-img);
+  border-radius: inherit;
+  transition: width 0.4s;
+}
+
+[data-tema="placar"] .tema-fill {
+  background-color: transparent;
+}
+
+[data-tema="recortes"] .tema-fill {
+  border-right: var(--t-border) solid var(--t-line);
+  border-radius: var(--t-radius) 0 0 var(--t-radius);
+}
+
+[data-tema="diario"] .tema-cta {
+  font-family: var(--t-body);
+  font-weight: 600;
+}
+
+[data-tema="diario"] .tema-destaque {
+  font-style: italic;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tema,
+  .tema * {
+    transition: none !important;
+  }
+}

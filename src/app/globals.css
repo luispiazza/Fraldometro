@@ -1,0 +1,43 @@
+@import "tailwindcss";
+@import "../themes/temas.css";
+
+/* Marca institucional: preto e branco com um único laranja de assinatura. */
+:root {
+  --bg: #f5f5f3; /* Algodão */
+  --surface: #ffffff; /* Fralda */
+  --fg: #1b1a22; /* Tinta */
+  --muted: #62616c;
+  --line: #e2e1dc;
+  --brand: #ff6a3d; /* Laranja */
+  --chip: #efeee9;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #121116;
+    --surface: #1b1a21;
+    --fg: #eeedf2;
+    --muted: #a3a2ad;
+    --line: #2d2c35;
+    --brand: #ff8a63;
+    --chip: #25242c;
+    color-scheme: dark;
+  }
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-brand: var(--brand);
+  --color-chip: var(--chip);
+  --font-sans: var(--font-instrument-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+}
