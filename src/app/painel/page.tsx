@@ -1,5 +1,6 @@
 import { eq } from "drizzle-orm";
 import type { Metadata } from "next";
+import Link from "next/link";
 import { db } from "@/db";
 import { pageMembers, pages } from "@/db/schema";
 import { exigirPerfil } from "@/lib/auth";
@@ -32,21 +33,31 @@ export default async function Painel() {
           <p className="text-muted">
             Nome, foto, recado e a meta de fraldas. Depois é só mandar o link no grupo da família.
           </p>
-          <button disabled className="rounded-full bg-fg px-5 py-3 font-semibold text-bg disabled:opacity-50">
-            Criar a página · em breve
-          </button>
+          <Link href="/painel/nova" className="rounded-full bg-fg px-5 py-3 font-semibold text-bg">
+            Criar a página
+          </Link>
         </section>
       ) : (
-        <ul className="grid gap-3 sm:grid-cols-2">
-          {minhas.map((p) => (
-            <li key={p.id} className="grid gap-1 rounded-xl border border-line bg-surface p-5">
-              <span className="text-lg font-semibold">{p.nomeBebe}</span>
-              <span className="text-sm text-muted">
-                {STATUS[p.status]} · /{p.slug}
-              </span>
-            </li>
-          ))}
-        </ul>
+        <div className="grid justify-items-start gap-4">
+          <ul className="grid w-full gap-3 sm:grid-cols-2">
+            {minhas.map((p) => (
+              <li key={p.id}>
+                <Link
+                  href={`/painel/paginas/${p.id}`}
+                  className="grid gap-1 rounded-xl border border-line bg-surface p-5 hover:border-fg"
+                >
+                  <span className="text-lg font-semibold">{p.nomeBebe}</span>
+                  <span className="text-sm text-muted">
+                    {STATUS[p.status]} · /{p.slug}
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+          <Link href="/painel/nova" className="text-sm font-semibold hover:text-brand">
+            + Criar outra página
+          </Link>
+        </div>
       )}
     </div>
   );

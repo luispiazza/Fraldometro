@@ -13,7 +13,7 @@ export default async function PainelLayout({ children }: LayoutProps<"/painel">)
           <Link href="/painel" className="text-xl">
             <Logo />
           </Link>
-          <div className="flex items-center gap-5 text-sm font-semibold">
+          <div className="flex items-center gap-4 text-sm font-semibold whitespace-nowrap sm:gap-5">
             <Link href="/painel" className="hover:text-brand">
               Minhas páginas
             </Link>

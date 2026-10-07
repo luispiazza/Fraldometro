@@ -1,16 +1,20 @@
 import Link from "next/link";
 import type { TemaId } from "@/themes";
 import { formatarNumero } from "@/lib/dinheiro";
+import { artigo, contracao, type Sexo } from "@/lib/pagina";
 import { Doar } from "./doar";
 import { Fraldometro } from "./fraldometro";
 import { Logo } from "./marca";
 
 export type DadosPagina = {
   nomeBebe: string;
+  sexo: Sexo;
+  jaNasceu: boolean;
   tema: TemaId;
-  chegada: string; // ex.: "dezembro"
-  recado: string;
-  encerraEm: string; // ex.: "20 de dezembro"
+  chegada: string | null; // ex.: "dezembro"
+  recado: string | null;
+  encerraEm: string | null; // ex.: "20 de dezembro"
+  fotoUrl: string | null;
   metaFraldas: number;
   valorFraldaCentavos: number;
   totalFraldas: number;
@@ -34,6 +38,10 @@ const LINHAS: [string, (c: (typeof CONSUMO)[number]) => string][] = [
 
 // Uma estrutura só; o tema muda apenas os tokens (ver src/themes/temas.css).
 export function PaginaDoBebe({ dados }: { dados: DadosPagina }) {
+  const de = contracao(dados.sexo);
+  const art = artigo(dados.sexo);
+  const chegada = dados.chegada && (dados.jaNasceu ? `Cheguei em ${dados.chegada}!` : `Chego em ${dados.chegada}!`);
+
   return (
     <div
       data-tema={dados.tema}
@@ -53,27 +61,31 @@ export function PaginaDoBebe({ dados }: { dados: DadosPagina }) {
             <Logo />
           </Link>
           <span>
-            Chá do {dados.nomeBebe} · até {dados.encerraEm}
+            Chá {de} {dados.nomeBebe}
+            {dados.encerraEm && ` · até ${dados.encerraEm}`}
           </span>
         </header>
 
         <section className="grid items-center gap-5 sm:grid-cols-[auto_minmax(0,1fr)]">
           <div
             role="img"
-            aria-label={`Foto do ${dados.nomeBebe}`}
-            className="h-[var(--t-photo-h)] w-[var(--t-photo-w)] border-[length:var(--t-border)] border-[var(--t-line)] bg-[var(--t-track)]"
+            aria-label={`Foto ${de} ${dados.nomeBebe}`}
+            className="h-[var(--t-photo-h)] w-[var(--t-photo-w)] border-[length:var(--t-border)] border-[var(--t-line)] bg-[var(--t-track)] bg-cover bg-center"
             style={{
               borderRadius: "var(--t-photo-radius)",
-              backgroundImage: "radial-gradient(circle at 50% 72%, var(--t-accent) 0 30%, transparent 31%)",
+              // Sem foto, o tema desenha um bebê genérico com a cor de destaque.
+              backgroundImage: dados.fotoUrl
+                ? `url("${dados.fotoUrl}")`
+                : "radial-gradient(circle at 50% 72%, var(--t-accent) 0 30%, transparent 31%)",
               boxShadow: "var(--t-shadow)",
             }}
           />
           <div>
             <h1 className="tema-display text-[clamp(30px,5vw,46px)] leading-[1.04] text-balance">
-              Oi, eu sou o <em className="tema-destaque not-italic text-[var(--t-accent)]">{dados.nomeBebe}</em>.
-              Chego em {dados.chegada}!
+              Oi, eu sou {art && `${art} `}
+              <em className="tema-destaque not-italic text-[var(--t-accent)]">{dados.nomeBebe}</em>.{chegada && ` ${chegada}`}
             </h1>
-            <p className="mt-2 max-w-[44ch] text-[var(--t-muted)]">{dados.recado}</p>
+            {dados.recado && <p className="mt-2 max-w-[44ch] whitespace-pre-line text-[var(--t-muted)]">{dados.recado}</p>}
           </div>
         </section>
 
@@ -116,7 +128,7 @@ export function PaginaDoBebe({ dados }: { dados: DadosPagina }) {
         <Link href="/" className="text-[var(--t-fg)]">
           <Logo />
         </Link>
-        · <Link href="/como-funciona" className="underline">crie a página do seu bebê</Link>
+        · <Link href="/entrar" className="underline">crie a página do seu bebê</Link>
       </footer>
     </div>
   );

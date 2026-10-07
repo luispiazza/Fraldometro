@@ -64,6 +64,8 @@ function FormCodigo({ inicial }: { inicial: EstadoEntrar }) {
         <button name="acao" value="reenviar" formNoValidate disabled={confirmando} className="font-semibold hover:text-brand">
           Mandar outro código
         </button>
+        {/* Recarga completa de propósito: zera o formulário e volta para a etapa do e-mail. */}
+        {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
         <a href="/entrar" className="text-muted hover:text-fg">
           Usar outro e-mail
         </a>
