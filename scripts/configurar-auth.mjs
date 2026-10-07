@@ -5,6 +5,9 @@
 //
 // Precisa de SUPABASE_ACCESS_TOKEN em .env.development.local
 // (gere em https://supabase.com/dashboard/account/tokens).
+//
+// Com RESEND_API_KEY, também liga o envio pelo Resend (SMTP) e o e-mail com o código.
+// O remetente sai de EMAIL_REMETENTE ou, se ele faltar, de um domínio verificado no Resend.
 
 import { readFileSync } from "node:fs";
 import { config } from "dotenv";
@@ -71,29 +74,67 @@ const desejado = {
   mailer_otp_exp: 600,
 };
 
-// No plano gratuito, o Supabase só deixa trocar o template com SMTP próprio (Resend).
-const temSmtp = Boolean(atual.smtp_host);
-if (temSmtp) {
+const resendKey = process.env.RESEND_API_KEY;
+if (resendKey) {
+  const remetente = process.env.EMAIL_REMETENTE || (await remetentePadrao(resendKey));
   Object.assign(desejado, {
+    smtp_host: "smtp.resend.com",
+    smtp_port: "465",
+    smtp_user: "resend",
+    smtp_pass: resendKey,
+    smtp_admin_email: remetente,
+    smtp_sender_name: "Fraldômetro",
+    // O limite padrão é baixo; o Resend gratuito manda até 100 por dia.
+    rate_limit_email_sent: 30,
+  });
+}
+
+/** acesso@<domínio verificado no Resend>. Precisa de uma chave com acesso total para listar. */
+async function remetentePadrao(chave) {
+  const r = await fetch("https://api.resend.com/domains", { headers: { Authorization: `Bearer ${chave}` } });
+  const pedirRemetente = (motivo) => {
+    console.error(`${motivo}\nDefina EMAIL_REMETENTE em .env.development.local (ex.: acesso@seudominio.com.br).`);
+    process.exit(1);
+  };
+  if (!r.ok) pedirRemetente(`Não deu para listar os domínios do Resend (resposta ${r.status}).`);
+  const dominios = (await r.json()).data;
+  const verificados = dominios.filter((d) => d.status === "verified").map((d) => d.name);
+  if (verificados.length === 0) {
+    const outros = dominios.map((d) => `${d.name} (${d.status})`).join(", ");
+    pedirRemetente(`Nenhum domínio verificado no Resend.${outros ? ` Cadastrados: ${outros}.` : " Nenhum domínio cadastrado."}`);
+  }
+  if (verificados.length > 1) pedirRemetente(`Há mais de um domínio verificado no Resend: ${verificados.join(", ")}.`);
+  return `acesso@${verificados[0]}`;
+}
+
+// smtp_pass volta mascarado da API, então só é comparado junto com o resto do SMTP.
+const diferentes = Object.entries(desejado).filter(([k, v]) => k !== "smtp_pass" && atual[k] !== v);
+if (diferentes.some(([k]) => k.startsWith("smtp_"))) diferentes.push(["smtp_pass", desejado.smtp_pass]);
+const mudancas = Object.fromEntries(diferentes);
+
+if (Object.keys(mudancas).length > 0) {
+  await chamar("PATCH", mudancas);
+  console.log(`Projeto ${ref} atualizado:`);
+  for (const k of Object.keys(mudancas)) console.log(`  - ${k}`);
+}
+
+// No plano gratuito, o Supabase só deixa trocar o template com SMTP próprio.
+if (resendKey || atual.smtp_host) {
+  const textos = {
     mailer_subjects_confirmation: assunto,
     mailer_subjects_magic_link: assunto,
     mailer_templates_confirmation_content: template,
     mailer_templates_magic_link_content: template,
-  });
+  };
+  const textosMudados = Object.fromEntries(Object.entries(textos).filter(([k, v]) => atual[k] !== v));
+  if (Object.keys(textosMudados).length > 0) {
+    await chamar("PATCH", textosMudados);
+    console.log("E-mail com o código aplicado.");
+  }
+  if (Object.keys(mudancas).length === 0 && Object.keys(textosMudados).length === 0) {
+    console.log("Login já estava configurado. Nada a mudar.");
+  }
+} else {
+  if (Object.keys(mudancas).length === 0) console.log("Login já estava configurado. Nada a mudar.");
+  console.log("\nO e-mail com o código fica para quando houver RESEND_API_KEY; rode de novo depois.");
 }
-const avisoSmtp = () =>
-  !temSmtp &&
-  console.log("\nO e-mail com o código fica para quando o SMTP (Resend) estiver configurado; rode de novo depois.");
-
-const mudancas = Object.fromEntries(Object.entries(desejado).filter(([k, v]) => atual[k] !== v));
-
-if (Object.keys(mudancas).length === 0) {
-  console.log("Login já estava configurado. Nada a mudar.");
-  avisoSmtp();
-  process.exit(0);
-}
-
-await chamar("PATCH", mudancas);
-console.log(`Projeto ${ref} atualizado:`);
-for (const k of Object.keys(mudancas)) console.log(`  - ${k}`);
-avisoSmtp();

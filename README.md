@@ -33,9 +33,10 @@ A configuração do Auth (código de 6 dígitos, endereços permitidos e o e-mai
 npm run auth:configurar   # precisa de SUPABASE_ACCESS_TOKEN em .env.development.local
 ```
 
-Falta: SMTP próprio (Resend). No plano gratuito, o Supabase só aceita trocar o template com SMTP
-próprio; até lá, o e-mail sai no modelo padrão (em inglês, só com link, sem código), só para membros
-da equipe do projeto e poucos por hora. Com o SMTP configurado, rode o script de novo.
+Com `RESEND_API_KEY`, o script também liga o envio pelo Resend (SMTP) e o e-mail com o código.
+
+Falta: domínio próprio verificado no Resend. Por enquanto o remetente é `onboarding@resend.dev`
+(`EMAIL_REMETENTE`), que só entrega no e-mail dono da conta do Resend.
 
 ## Banco
 
