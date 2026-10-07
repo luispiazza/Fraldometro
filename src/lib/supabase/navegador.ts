@@ -1,6 +1,7 @@
 import { createBrowserClient } from "@supabase/ssr";
+import { supabasePublishableKey, supabaseUrl } from "@/lib/env";
 
 // Cliente do Supabase no navegador: login e o fraldômetro ao vivo (Realtime).
 export function criarClienteNavegador() {
-  return createBrowserClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!);
+  return createBrowserClient(supabaseUrl, supabasePublishableKey);
 }

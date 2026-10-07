@@ -10,7 +10,7 @@ Precisa de Node 20 (`nvm use`).
 
 ```bash
 npm install
-cp .env.example .env.local   # preencha com os dados do Supabase
+npx vercel env pull .env.local   # traz as variáveis da integração Supabase
 npm run dev
 ```
 
