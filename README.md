@@ -17,6 +17,26 @@ npm run dev
 - `/` e `/como-funciona`: site institucional
 - `/exemplo/placar`, `/exemplo/diario`, `/exemplo/recortes`: página do bebê de exemplo em cada tema
 
+- `/entrar`: login e cadastro (código de 6 dígitos no e-mail, sem senha)
+- `/painel`, `/painel/conta`: área logada
+
+## Login
+
+Supabase Auth com código por e-mail (`signInWithOtp` + `verifyOtp`). Na primeira vez, a pessoa completa
+o perfil em `/entrar/perfil`, que cria a linha em `users`. O `src/proxy.ts` renova a sessão e barra o
+`/painel` sem login; a checagem que vale fica em `src/lib/auth.ts`.
+
+A configuração do Auth (código de 6 dígitos, endereços permitidos e o e-mail em
+`supabase/templates/codigo.html`) é aplicada por script, sem clicar no painel:
+
+```bash
+npm run auth:configurar   # precisa de SUPABASE_ACCESS_TOKEN em .env.development.local
+```
+
+Falta: SMTP próprio (Resend). No plano gratuito, o Supabase só aceita trocar o template com SMTP
+próprio; até lá, o e-mail sai no modelo padrão (em inglês, só com link, sem código), só para membros
+da equipe do projeto e poucos por hora. Com o SMTP configurado, rode o script de novo.
+
 ## Banco
 
 O esquema fica em `src/db/schema.ts` (6 tabelas, valores em centavos, sem CPF) e as migrações em `drizzle/`.
