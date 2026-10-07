@@ -8,7 +8,7 @@ import { supabasePublishableKey, supabaseUrl } from "@/lib/env";
 export async function criarClienteServidor() {
   const cookieStore = await cookies();
 
-  return createServerClient(supabaseUrl, supabasePublishableKey, {
+  return createServerClient(supabaseUrl(), supabasePublishableKey(), {
     cookies: {
       getAll() {
         return cookieStore.getAll();
