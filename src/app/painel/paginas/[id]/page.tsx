@@ -4,11 +4,20 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { botaoSecundario } from "@/components/campos";
 import { exigirPerfil } from "@/lib/auth";
+import { contaDaPagina } from "@/lib/pagamentos";
 import { paginaDoMembro } from "@/lib/paginas";
+import { publicarPagina } from "../../acoes-conta";
 import { atualizarPagina } from "../../acoes-pagina";
+import { BotaoPublicar } from "../../form-conta";
 import { FormPagina } from "../../form-pagina";
 
 export const metadata: Metadata = { title: "Editar a página" };
+
+const PASSO = {
+  abrir: "Para publicar, abra a conta da família que recebe o Pix.",
+  verificar: "Para publicar, falta terminar a verificação da conta da família.",
+  publicar: "A conta da família está aprovada. Já dá para publicar.",
+};
 
 const reais = (centavos: number) => (centavos / 100).toFixed(2).replace(".", ",");
 // encerra_em é o fim do dia em Brasília; a data do formulário é o dia de lá.
@@ -22,6 +31,13 @@ export default async function EditarPagina({ params, searchParams }: PageProps<"
 
   const criada = (await searchParams).criada === "1";
   const dominio = (await headers()).get("host") ?? "fraldometro";
+  const noAr = pagina.status === "no_ar";
+  const conta = await contaDaPagina(pagina.id);
+  const passo: keyof typeof PASSO = !conta
+    ? "abrir"
+    : conta.statusVerificacao !== "aprovada" || !conta.gatewayClienteId
+      ? "verificar"
+      : "publicar";
 
   return (
     <div className="mx-auto grid max-w-2xl gap-8 px-4 py-12">
@@ -32,19 +48,24 @@ export default async function EditarPagina({ params, searchParams }: PageProps<"
 
       <section className="grid gap-3 rounded-xl border border-line bg-chip p-5">
         <div className="flex flex-wrap items-center gap-2">
-          <span className="rounded-full bg-surface px-3 py-1 text-sm font-semibold">Rascunho</span>
-          <span className="text-sm text-muted">Só vocês veem.</span>
+          <span className="rounded-full bg-surface px-3 py-1 text-sm font-semibold">{noAr ? "No ar" : "Rascunho"}</span>
+          <span className="text-sm text-muted">{noAr ? `${dominio}/${pagina.slug}` : "Só vocês veem."}</span>
         </div>
-        <p className="text-sm">
-          Para publicar, falta abrir a conta da família que recebe o Pix. Isso chega na próxima etapa do Fraldômetro.
-        </p>
+        {!noAr && <p className="text-sm">{PASSO[passo]}</p>}
         <div className="flex flex-wrap gap-2">
-          <Link href={`/painel/paginas/${pagina.id}/previa`} className={`${botaoSecundario} text-sm`}>
-            Ver prévia
+          {noAr ? (
+            <Link href={`/${pagina.slug}`} className={`${botaoSecundario} text-sm`}>
+              Abrir a página
+            </Link>
+          ) : (
+            <Link href={`/painel/paginas/${pagina.id}/previa`} className={`${botaoSecundario} text-sm`}>
+              Ver prévia
+            </Link>
+          )}
+          <Link href={`/painel/paginas/${pagina.id}/conta`} className={`${botaoSecundario} text-sm`}>
+            Conta da família
           </Link>
-          <button disabled className="rounded-full bg-fg px-5 py-3 text-sm font-semibold text-bg disabled:opacity-50">
-            Publicar · em breve
-          </button>
+          {!noAr && passo === "publicar" && <BotaoPublicar acao={publicarPagina.bind(null, pagina.id)} />}
         </div>
       </section>
 

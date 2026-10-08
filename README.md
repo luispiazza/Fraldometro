@@ -19,6 +19,8 @@ npm run dev
 
 - `/entrar`: login e cadastro (código de 6 dígitos no e-mail, sem senha)
 - `/painel`, `/painel/conta`: área logada
+- `/painel/paginas/[id]/conta`: conta da família no Asaas (abertura e verificação)
+- `/[slug]/doacao/[id]`: Pix da doação (QR Code e copia e cola)
 
 ## Login
 
@@ -35,8 +37,25 @@ npm run auth:configurar   # precisa de SUPABASE_ACCESS_TOKEN em .env.development
 
 Com `RESEND_API_KEY`, o script também liga o envio pelo Resend (SMTP) e o e-mail com o código.
 
-Falta: domínio próprio verificado no Resend. Por enquanto o remetente é `onboarding@resend.dev`
-(`EMAIL_REMETENTE`), que só entrega no e-mail dono da conta do Resend.
+O remetente é `contato@fraldometro.com.br` (`EMAIL_REMETENTE`), com o domínio verificado no Resend
+(registros DNS na Cloudflare).
+
+## Pagamento (Asaas)
+
+Cada página tem uma subconta da família no Asaas (`src/lib/asaas.ts`). A cobrança Pix é criada com a
+chave da subconta, então o Pix sai no nome de quem recebe; a comissão vai por split (`fixedValue`) para a
+conta do Fraldômetro, e a taxa do Asaas sai da subconta. A chave de cada subconta fica cifrada no banco
+(`src/lib/cifra.ts`, `CHAVE_CIFRA`); o CPF vai direto para o Asaas.
+
+O Asaas exige CPF do pagador. Para não pedir CPF ao convidado, cada subconta tem um cliente só,
+"Convidados", criado com o CPF do titular na abertura da conta.
+
+Uma doação vira paga pelo webhook (`/api/asaas/webhook`, com `ASAAS_WEBHOOK_TOKEN`) ou pela consulta à
+API que a tela do Pix faz enquanto espera (`/api/doacoes/[id]`). No Mac o webhook não chega, e a
+consulta cobre. Os eventos ficam em `webhook_events`, sem repetir.
+
+No sandbox (`ASAAS_AMBIENTE=sandbox`) aparecem dois botões de teste: "Aprovar no sandbox", na conta da
+família, e "Simular pagamento", na tela do Pix.
 
 ## Banco
 
@@ -54,4 +73,10 @@ Um tema novo é um bloco novo de variáveis, não uma tela nova.
 
 ## Onde estamos
 
-Fase 2 do plano técnico (base do produto). A seguir: fase 3, pagamento ponta a ponta no sandbox do gateway.
+Fase 3 do plano técnico: pagamento ponta a ponta no sandbox do Asaas, em andamento.
+
+Falta para fechar a fase 3:
+- Rodar o fluxo no sandbox com uma conta de testes do Asaas (`ASAAS_API_KEY`).
+- Confirmar no sandbox que o Asaas aceita o cliente "Convidados" com o CPF do titular.
+- Link de envio de documentos (`onboardingUrl`): no sandbox, pedir ao suporte do Asaas para ligar.
+- Limitar quantos Pix um mesmo visitante pode gerar (hoje qualquer um gera cobranças sem limite).

@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { TemaId } from "@/themes";
 import { formatarNumero } from "@/lib/dinheiro";
 import { artigo, contracao, type Sexo } from "@/lib/pagina";
-import { Doar } from "./doar";
+import { Doar, type AcaoDoar } from "./doar";
 import { Fraldometro } from "./fraldometro";
 import { Logo } from "./marca";
 
@@ -37,7 +37,7 @@ const LINHAS: [string, (c: (typeof CONSUMO)[number]) => string][] = [
 ];
 
 // Uma estrutura só; o tema muda apenas os tokens (ver src/themes/temas.css).
-export function PaginaDoBebe({ dados }: { dados: DadosPagina }) {
+export function PaginaDoBebe({ dados, acaoDoar }: { dados: DadosPagina; acaoDoar?: AcaoDoar }) {
   const de = contracao(dados.sexo);
   const art = artigo(dados.sexo);
   const chegada = dados.chegada && (dados.jaNasceu ? `Cheguei em ${dados.chegada}!` : `Chego em ${dados.chegada}!`);
@@ -90,7 +90,7 @@ export function PaginaDoBebe({ dados }: { dados: DadosPagina }) {
         </section>
 
         <Fraldometro total={dados.totalFraldas} meta={dados.metaFraldas} doadores={dados.doadores} />
-        <Doar valorFraldaCentavos={dados.valorFraldaCentavos} />
+        <Doar valorFraldaCentavos={dados.valorFraldaCentavos} acao={acaoDoar} />
 
         <section className="grid gap-3">
           <h2 className="tema-display text-[22px] leading-tight">Por que {formatarNumero(dados.metaFraldas)}?</h2>

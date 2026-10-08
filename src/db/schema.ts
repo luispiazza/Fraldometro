@@ -110,7 +110,7 @@ export const pageMembers = pgTable(
   ],
 );
 
-/** A subconta da família no gateway. */
+/** A subconta da família no gateway (Asaas). */
 export const payoutAccounts = pgTable(
   "payout_accounts",
   {
@@ -119,6 +119,13 @@ export const payoutAccounts = pgTable(
       .notNull()
       .references(() => pages.id, { onDelete: "cascade" }),
     gatewaySubcontaId: text("gateway_subconta_id").notNull(),
+    gatewayWalletId: text("gateway_wallet_id").notNull(),
+    // A chave de API da subconta, cifrada (src/lib/cifra.ts). O Asaas só a mostra na criação.
+    gatewayApiKeyCifrada: text("gateway_api_key_cifrada").notNull(),
+    // Cliente "Convidados" da subconta, usado em todas as cobranças (ver src/lib/asaas.ts).
+    // Fica vazio se a criação falhou logo depois da subconta; o painel pede o CPF de novo.
+    gatewayClienteId: text("gateway_cliente_id"),
+    titular: text("titular").notNull(), // nome de quem recebe, como aparece no Pix
     statusVerificacao: statusVerificacao("status_verificacao").notNull().default("pendente"),
     createdAt: criadoEm(),
   },
@@ -128,7 +135,7 @@ export const payoutAccounts = pgTable(
   ],
 );
 
-/** Cada doação. Só vira "paga" quando o webhook do gateway é validado. */
+/** Cada doação. Só vira "paga" com a confirmação do gateway (webhook validado ou consulta à API). */
 export const donations = pgTable(
   "donations",
   {
