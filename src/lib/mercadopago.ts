@@ -158,8 +158,12 @@ export type Pagamento = {
 const reais = (centavos: number) => Math.round(centavos) / 100;
 
 // O Mercado Pago exige o e-mail de quem paga. Quando o convidado não informa o dele,
-// vai um endereço do nosso domínio, único por doação.
-const emailDoPagador = (referencia: string, email: string | null) => email ?? `pix+${referencia.slice(0, 8)}@fraldometro.com.br`;
+// vai um endereço do nosso domínio, único por doação. Em teste, a família é um usuário de teste
+// e o Mercado Pago recusa pagador de verdade (user_allowed_only_in_test), então vai um @testuser.com.
+const emailDoPagador = (referencia: string, email: string | null) =>
+  emTeste()
+    ? `test_user_${referencia.slice(0, 8)}@testuser.com`
+    : (email ?? `pix+${referencia.slice(0, 8)}@fraldometro.com.br`);
 
 export async function criarPix(
   token: string,
