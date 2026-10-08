@@ -64,7 +64,7 @@ export default async function Admin() {
           <Cartao
             rotulo="Comissão"
             valor={formatarReais(d.comissao)}
-            detalhe={`${pct(d.cobriramTaxa, d.pagas)} dos convidados cobriram`}
+            detalhe={d.pagas ? `${pct(d.cobriramTaxa, d.pagas)} dos convidados cobriram` : undefined}
           />
           <Cartao rotulo="Para as famílias" valor={formatarReais(d.arrecadado - d.comissao)} detalhe="antes da taxa do Asaas" />
           <Cartao
