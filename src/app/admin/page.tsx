@@ -66,7 +66,7 @@ export default async function Admin() {
             valor={formatarReais(d.comissao)}
             detalhe={d.pagas ? `${pct(d.cobriramTaxa, d.pagas)} dos convidados cobriram` : undefined}
           />
-          <Cartao rotulo="Para as famílias" valor={formatarReais(d.arrecadado - d.comissao)} detalhe="antes da taxa do Asaas" />
+          <Cartao rotulo="Para as famílias" valor={formatarReais(d.arrecadado - d.comissao)} detalhe="antes da taxa do Mercado Pago" />
           <Cartao
             rotulo="Fraldas"
             valor={formatarNumero(d.fraldas)}
@@ -85,14 +85,10 @@ export default async function Admin() {
             ["Suspensa", p.suspensa],
           ]}
         />
-        <Lista
-          titulo={`Contas da família (${formatarNumero(c.total)})`}
-          itens={[
-            ["Aprovada", c.aprovada],
-            ["Em análise", c.emAnalise],
-            ["Pendente", c.pendente],
-            ["Recusada", c.recusada],
-          ]}
+        <Cartao
+          rotulo="Contas conectadas"
+          valor={formatarNumero(c.total)}
+          detalhe={`Mercado Pago · ${formatarNumero(c.novas30)} nos últimos 30 dias`}
         />
         <Lista
           titulo={`Pix gerados (${formatarNumero(d.gerados)})`}
@@ -106,7 +102,7 @@ export default async function Admin() {
         <div className="grid content-start gap-3">
           <Cartao rotulo="Conversão do Pix" valor={pct(d.pagas, concluidos)} detalhe="pagos entre os já concluídos" />
           <Cartao
-            rotulo="Webhooks do Asaas"
+            rotulo="Webhooks do Mercado Pago"
             valor={formatarNumero(w.total)}
             detalhe={w.pendentes ? `${formatarNumero(w.pendentes)} sem processar` : "todos processados"}
           />

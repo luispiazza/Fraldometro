@@ -17,7 +17,7 @@ import {
 import { anonRole, authUid, authUsers, authenticatedRole } from "drizzle-orm/supabase";
 
 // Valores em dinheiro sempre em centavos (integer). Nenhum CPF é guardado aqui:
-// os dados de identificação ficam no gateway, que verifica a subconta.
+// os dados de identificação ficam na conta Mercado Pago da família.
 //
 // O app grava pelo servidor, com a conexão do banco (DATABASE_URL), que não passa pelas
 // regras abaixo. As regras protegem o acesso pelo cliente do Supabase (navegador e Realtime).
@@ -31,7 +31,6 @@ const ehMembro = (colunaPagina: string) =>
 export const sexo = pgEnum("sexo", ["menino", "menina", "surpresa"]);
 export const statusPagina = pgEnum("status_pagina", ["rascunho", "no_ar", "encerrada", "suspensa"]);
 export const papelMembro = pgEnum("papel_membro", ["dono", "coeditor"]);
-export const statusVerificacao = pgEnum("status_verificacao", ["pendente", "em_analise", "aprovada", "recusada"]);
 export const statusDoacao = pgEnum("status_doacao", ["aguardando", "paga", "expirada", "devolvida"]);
 
 /** Quem administra páginas. O id é o mesmo do usuário no Supabase Auth. */
@@ -121,7 +120,7 @@ export const pageMembers = pgTable(
   ],
 );
 
-/** A subconta da família no gateway (Asaas). */
+/** A conta Mercado Pago da família, conectada por OAuth. */
 export const payoutAccounts = pgTable(
   "payout_accounts",
   {
@@ -129,15 +128,12 @@ export const payoutAccounts = pgTable(
     pageId: uuid("page_id")
       .notNull()
       .references(() => pages.id, { onDelete: "cascade" }),
-    gatewaySubcontaId: text("gateway_subconta_id").notNull(),
-    gatewayWalletId: text("gateway_wallet_id").notNull(),
-    // A chave de API da subconta, cifrada (src/lib/cifra.ts). O Asaas só a mostra na criação.
-    gatewayApiKeyCifrada: text("gateway_api_key_cifrada").notNull(),
-    // Cliente "Convidados" da subconta, usado em todas as cobranças (ver src/lib/asaas.ts).
-    // Fica vazio se a criação falhou logo depois da subconta; o painel pede o CPF de novo.
-    gatewayClienteId: text("gateway_cliente_id"),
+    mpUserId: text("mp_user_id").notNull(), // id do usuário no Mercado Pago
+    // Tokens do OAuth, cifrados (src/lib/cifra.ts). O de acesso vale 180 dias e é renovado com o outro.
+    mpAccessTokenCifrado: text("mp_access_token_cifrado").notNull(),
+    mpRefreshTokenCifrado: text("mp_refresh_token_cifrado").notNull(),
+    mpTokenExpiraEm: timestamp("mp_token_expira_em", { withTimezone: true }).notNull(),
     titular: text("titular").notNull(), // nome de quem recebe, como aparece no Pix
-    statusVerificacao: statusVerificacao("status_verificacao").notNull().default("pendente"),
     createdAt: criadoEm(),
   },
   (t) => [

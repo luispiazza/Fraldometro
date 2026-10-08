@@ -5,10 +5,10 @@ import { notFound } from "next/navigation";
 import { Logo } from "@/components/marca";
 import { db } from "@/db";
 import { donations, pages } from "@/db/schema";
-import { qrCodePix, sandbox } from "@/lib/asaas";
 import { formatarNumero, formatarReais } from "@/lib/dinheiro";
 import { contracao } from "@/lib/pagina";
-import { chaveDaConta, conciliarDoacao, contaDaPagina } from "@/lib/pagamentos";
+import { emTeste, type Pagamento } from "@/lib/mercadopago";
+import { conciliarPagamento, contaDaPagina } from "@/lib/pagamentos";
 import { isTema, TEMA_PADRAO } from "@/themes";
 import { simularPagamento } from "../../acoes-doacao";
 import { Aguardando, CopiaECola } from "./aguardando";
@@ -33,8 +33,17 @@ export default async function PixDaDoacao({ params }: PageProps<"/[slug]/doacao/
   const conta = await contaDaPagina(pagina.id);
   if (!conta) notFound();
 
-  const doacao = await conciliarDoacao(linha.doacao, conta).catch(() => linha.doacao);
-  const pix = doacao.status === "aguardando" ? await qrCodePix(chaveDaConta(conta), doacao.gatewayCobrancaId).catch(() => null) : null;
+  // Enquanto espera, a mesma consulta traz o status e o QR Code.
+  let doacao = linha.doacao;
+  let pagamento: Pagamento | null = null;
+  if (doacao.status === "aguardando") {
+    try {
+      ({ doacao, pagamento } = await conciliarPagamento(doacao, conta));
+    } catch (e) {
+      console.error("Mercado Pago: consulta do Pix", e);
+    }
+  }
+  const pix = pagamento?.point_of_interaction?.transaction_data;
   const de = contracao(pagina.sexo);
 
   return (
@@ -68,28 +77,28 @@ export default async function PixDaDoacao({ params }: PageProps<"/[slug]/doacao/
                 Pague {formatarReais(doacao.valorCentavos)} via Pix
               </h1>
               <p className="text-[var(--t-muted)]">
-                {formatarNumero(doacao.fraldas)} fraldas para {pagina.nomeBebe}. O Pix vai para {conta.titular}, que
-                recebe pelos pais. Esta tela atualiza sozinha quando o pagamento cair.
+                {formatarNumero(doacao.fraldas)} fraldas para {pagina.nomeBebe}. O Pix vai para {conta.titular}, na conta
+                Mercado Pago da família. Esta tela atualiza sozinha quando o pagamento cair.
               </p>
-              {pix ? (
+              {pix?.qr_code && pix.qr_code_base64 ? (
                 <>
-                  {/* eslint-disable-next-line @next/next/no-img-element -- imagem em base64 vinda do Asaas */}
+                  {/* eslint-disable-next-line @next/next/no-img-element -- imagem em base64 vinda do Mercado Pago */}
                   <img
-                    src={`data:image/png;base64,${pix.encodedImage}`}
+                    src={`data:image/png;base64,${pix.qr_code_base64}`}
                     alt="QR Code do Pix"
                     width={240}
                     height={240}
                     className="justify-self-center rounded-lg bg-white p-2"
                   />
-                  <CopiaECola codigo={pix.payload} />
+                  <CopiaECola codigo={pix.qr_code} />
                 </>
               ) : (
                 <p role="alert">Não conseguimos carregar o QR Code. Recarregue a página em instantes.</p>
               )}
               <Aguardando id={doacao.id} />
-              {sandbox() && (
+              {emTeste() && (
                 <form action={simularPagamento.bind(null, doacao.id)}>
-                  <button className="text-sm underline">Simular pagamento (sandbox)</button>
+                  <button className="text-sm underline">Simular pagamento (teste)</button>
                 </form>
               )}
             </>

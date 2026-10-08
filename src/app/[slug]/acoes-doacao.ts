@@ -5,9 +5,9 @@ import { eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import { db } from "@/db";
 import { donations } from "@/db/schema";
-import { confirmarNoSandbox, criarCobrancaPix, sandbox } from "@/lib/asaas";
 import { calcularDoacao } from "@/lib/dinheiro";
-import { chaveDaConta, conciliarDoacao, contaDaPagina } from "@/lib/pagamentos";
+import { criarPix, emTeste, ErroMercadoPago } from "@/lib/mercadopago";
+import { aplicarStatusPagamento, conciliarPagamento, contaDaPagina, tokenDaConta } from "@/lib/pagamentos";
 import { paginaNoAr } from "@/lib/paginas";
 
 export type EstadoDoacao = { erro?: string };
@@ -24,9 +24,7 @@ export async function criarDoacao(slug: string, _: EstadoDoacao, form: FormData)
   if (pagina.encerraEm && pagina.encerraEm < new Date()) return { erro: "As doações desta página já foram encerradas." };
 
   const conta = await contaDaPagina(pagina.id);
-  if (!conta?.gatewayClienteId || conta.statusVerificacao !== "aprovada") {
-    return { erro: "A conta da família ainda não está pronta para receber. Tente mais tarde." };
-  }
+  if (!conta) return { erro: "A conta da família ainda não está pronta para receber. Tente mais tarde." };
 
   const fraldas = Number(texto("fraldas"));
   if (!Number.isInteger(fraldas) || fraldas < 1 || fraldas > 5000) return { erro: "Escolha quantas fraldas doar." };
@@ -40,18 +38,23 @@ export async function criarDoacao(slug: string, _: EstadoDoacao, form: FormData)
   const { taxa, totalPago } = calcularDoacao(fraldas, pagina.valorFraldaCentavos, cobrirTaxa);
   const id = randomUUID();
 
-  let cobrancaId: string;
+  let pagamentoId: string;
   try {
-    const cobranca = await criarCobrancaPix(chaveDaConta(conta), {
-      cliente: conta.gatewayClienteId,
+    const pagamento = await criarPix(await tokenDaConta(conta), {
       valorCentavos: totalPago,
       comissaoCentavos: taxa,
       descricao: `${fraldas} fraldas para ${pagina.nomeBebe}, de ${nome}`,
       referencia: id,
+      nome,
+      email,
     });
-    cobrancaId = cobranca.id;
+    pagamentoId = String(pagamento.id);
   } catch (e) {
-    console.error("Asaas: cobrança", e);
+    console.error("Mercado Pago: Pix", e);
+    // 13253: a conta da família não tem chave Pix cadastrada no Mercado Pago.
+    if (e instanceof ErroMercadoPago && e.causas.includes("13253")) {
+      return { erro: "A conta da família ainda não tem chave Pix. Avise os pais e tente mais tarde." };
+    }
     return { erro: "Não conseguimos gerar o Pix agora. Tente de novo em instantes." };
   }
 
@@ -65,17 +68,21 @@ export async function criarDoacao(slug: string, _: EstadoDoacao, form: FormData)
     valorCentavos: totalPago,
     comissaoCentavos: taxa,
     cobriuTaxa: cobrirTaxa,
-    gatewayCobrancaId: cobrancaId,
+    gatewayCobrancaId: pagamentoId,
   });
   redirect(`/${slug}/doacao/${id}`);
 }
 
-/** Só no sandbox: simula o Pix do convidado. */
+/**
+ * Só em teste: dá a doação como paga. O Pix de teste do Mercado Pago não tem como ser pago,
+ * então a confirmação é local, e só para pagamentos que o Mercado Pago diz serem de teste.
+ */
 export async function simularPagamento(doacaoId: string): Promise<void> {
-  if (!sandbox()) return;
+  if (!emTeste()) return;
   const [doacao] = await db.select().from(donations).where(eq(donations.id, doacaoId)).limit(1);
   const conta = doacao && (await contaDaPagina(doacao.pageId));
   if (!conta || doacao.status !== "aguardando") return;
-  await confirmarNoSandbox(chaveDaConta(conta), doacao.gatewayCobrancaId);
-  await conciliarDoacao(doacao, conta);
+  const { pagamento } = await conciliarPagamento(doacao, conta);
+  if (pagamento.live_mode) return;
+  await aplicarStatusPagamento(doacao.gatewayCobrancaId, "paga");
 }

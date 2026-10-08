@@ -19,7 +19,7 @@ npm run dev
 
 - `/entrar`: login e cadastro (código de 6 dígitos no e-mail, sem senha)
 - `/painel`, `/painel/conta`: área logada
-- `/painel/paginas/[id]/conta`: conta da família no Asaas (abertura e verificação)
+- `/painel/paginas/[id]/conta`: conexão da conta Mercado Pago da família
 - `/[slug]/doacao/[id]`: Pix da doação (QR Code e copia e cola)
 - `/admin`: visão geral da plataforma, só para a equipe (404 para os outros)
 
@@ -50,22 +50,30 @@ Com `RESEND_API_KEY`, o script também liga o envio pelo Resend (SMTP) e o e-mai
 O remetente é `contato@fraldometro.com.br` (`EMAIL_REMETENTE`), com o domínio verificado no Resend
 (registros DNS na Cloudflare).
 
-## Pagamento (Asaas)
+## Pagamento (Mercado Pago)
 
-Cada página tem uma subconta da família no Asaas (`src/lib/asaas.ts`). A cobrança Pix é criada com a
-chave da subconta, então o Pix sai no nome de quem recebe; a comissão vai por split (`fixedValue`) para a
-conta do Fraldômetro, e a taxa do Asaas sai da subconta. A chave de cada subconta fica cifrada no banco
-(`src/lib/cifra.ts`, `CHAVE_CIFRA`); o CPF vai direto para o Asaas.
+Modelo marketplace do Mercado Pago (`src/lib/mercadopago.ts`). A família conecta a conta Mercado Pago dela
+por OAuth ("Conectar com Mercado Pago", volta em `/painel/mercadopago/retorno`); não há cadastro nem
+verificação no Fraldômetro. O Pix é criado com o token da família, então o dinheiro cai direto na conta
+dela; a comissão vai por `application_fee` para a conta dona da aplicação, e a taxa do Mercado Pago sai da
+parte da família. Os tokens ficam cifrados no banco (`src/lib/cifra.ts`, `CHAVE_CIFRA`) e são renovados
+quando faltam 30 dias para vencer (valem 180).
 
-O Asaas exige CPF do pagador. Para não pedir CPF ao convidado, cada subconta tem um cliente só,
-"Convidados", criado com o CPF do titular na abertura da conta.
+A conta da família precisa ter chave Pix cadastrada no Mercado Pago; sem ela, o Pix é recusado e o
+convidado vê um aviso.
 
-Uma doação vira paga pelo webhook (`/api/asaas/webhook`, com `ASAAS_WEBHOOK_TOKEN`) ou pela consulta à
-API que a tela do Pix faz enquanto espera (`/api/doacoes/[id]`). No Mac o webhook não chega, e a
-consulta cobre. Os eventos ficam em `webhook_events`, sem repetir.
+Uma doação vira paga pelo webhook (`/api/mercadopago/webhook`, enviado no `notification_url` de cada Pix)
+ou pela consulta à API que a tela do Pix faz enquanto espera (`/api/doacoes/[id]`). O webhook não confia no
+corpo do aviso: busca o pagamento na API. No Mac o webhook não chega, e a consulta cobre.
 
-No sandbox (`ASAAS_AMBIENTE=sandbox`) aparecem dois botões de teste: "Aprovar no sandbox", na conta da
-família, e "Simular pagamento", na tela do Pix.
+Configuração da aplicação no painel do Mercado Pago:
+- Modelo de integração marketplace, com `MP_CLIENT_ID` e `MP_CLIENT_SECRET`.
+- URL de redirecionamento: `<SITE_URL>/painel/mercadopago/retorno` (https; o OAuth não volta para localhost).
+- Webhooks: assinatura secreta em `MP_WEBHOOK_SECRET`.
+
+Em teste (`MP_AMBIENTE=teste`), o OAuth gera tokens de teste: conecte com o usuário vendedor de teste do
+painel. O Pix de teste não pode ser pago, então a tela do Pix mostra "Simular pagamento", que marca a doação
+como paga (só quando o Mercado Pago diz que o pagamento é de teste).
 
 ## Banco
 
@@ -83,10 +91,10 @@ Um tema novo é um bloco novo de variáveis, não uma tela nova.
 
 ## Onde estamos
 
-Fase 3 do plano técnico: pagamento ponta a ponta no sandbox do Asaas, em andamento.
+Fase 3 do plano técnico: pagamento ponta a ponta em teste no Mercado Pago, em andamento.
 
 Falta para fechar a fase 3:
-- Rodar o fluxo no sandbox com uma conta de testes do Asaas (`ASAAS_API_KEY`).
-- Confirmar no sandbox que o Asaas aceita o cliente "Convidados" com o CPF do titular.
-- Link de envio de documentos (`onboardingUrl`): no sandbox, pedir ao suporte do Asaas para ligar.
+- Criar a aplicação marketplace no Mercado Pago e os usuários de teste (vendedor e comprador).
+- Rodar o fluxo em teste num endereço https (preview da Vercel), por causa da volta do OAuth.
+- Confirmar o código de erro de conta sem chave Pix (hoje tratamos o 13253).
 - Limitar quantos Pix um mesmo visitante pode gerar (hoje qualquer um gera cobranças sem limite).

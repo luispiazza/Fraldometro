@@ -43,10 +43,7 @@ export async function numerosDoAdmin() {
     db
       .select({
         total: int(sql`count(*)`),
-        pendente: int(sql`count(*) filter (where ${payoutAccounts.statusVerificacao} = 'pendente')`),
-        emAnalise: int(sql`count(*) filter (where ${payoutAccounts.statusVerificacao} = 'em_analise')`),
-        aprovada: int(sql`count(*) filter (where ${payoutAccounts.statusVerificacao} = 'aprovada')`),
-        recusada: int(sql`count(*) filter (where ${payoutAccounts.statusVerificacao} = 'recusada')`),
+        novas30: int(sql`count(*) filter (where ${payoutAccounts.createdAt} >= ${ULTIMOS_30})`),
       })
       .from(payoutAccounts),
     db

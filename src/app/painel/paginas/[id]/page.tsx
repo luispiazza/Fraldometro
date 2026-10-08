@@ -14,9 +14,8 @@ import { FormPagina } from "../../form-pagina";
 export const metadata: Metadata = { title: "Editar a página" };
 
 const PASSO = {
-  abrir: "Para publicar, abra a conta da família que recebe o Pix.",
-  verificar: "Para publicar, falta terminar a verificação da conta da família.",
-  publicar: "A conta da família está aprovada. Já dá para publicar.",
+  conectar: "Para publicar, conecte a conta Mercado Pago da família, que recebe o Pix.",
+  publicar: "A conta da família está conectada. Já dá para publicar.",
 };
 
 const reais = (centavos: number) => (centavos / 100).toFixed(2).replace(".", ",");
@@ -33,11 +32,7 @@ export default async function EditarPagina({ params, searchParams }: PageProps<"
   const dominio = (await headers()).get("host") ?? "fraldometro";
   const noAr = pagina.status === "no_ar";
   const conta = await contaDaPagina(pagina.id);
-  const passo: keyof typeof PASSO = !conta
-    ? "abrir"
-    : conta.statusVerificacao !== "aprovada" || !conta.gatewayClienteId
-      ? "verificar"
-      : "publicar";
+  const passo: keyof typeof PASSO = conta ? "publicar" : "conectar";
 
   return (
     <div className="mx-auto grid max-w-2xl gap-8 px-4 py-12">
