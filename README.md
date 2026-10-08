@@ -21,6 +21,16 @@ npm run dev
 - `/painel`, `/painel/conta`: área logada
 - `/painel/paginas/[id]/conta`: conta da família no Asaas (abertura e verificação)
 - `/[slug]/doacao/[id]`: Pix da doação (QR Code e copia e cola)
+- `/admin`: visão geral da plataforma, só para a equipe (404 para os outros)
+
+## Admin
+
+Quem abre o `/admin` está na tabela `admins` (fora de `users`, que o próprio usuário pode editar pelo
+cliente do Supabase). Para incluir alguém já cadastrado, no SQL Editor do Supabase:
+
+```sql
+insert into admins (user_id) select id from users where email = 'alguem@exemplo.com';
+```
 
 ## Login
 
@@ -59,7 +69,7 @@ família, e "Simular pagamento", na tela do Pix.
 
 ## Banco
 
-O esquema fica em `src/db/schema.ts` (6 tabelas, valores em centavos, sem CPF) e as migrações em `drizzle/`.
+O esquema fica em `src/db/schema.ts` (7 tabelas, valores em centavos, sem CPF) e as migrações em `drizzle/`.
 
 ```bash
 npm run db:generate   # gera migração a partir do schema

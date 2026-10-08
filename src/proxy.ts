@@ -3,7 +3,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { supabasePublishableKey, supabaseUrl } from "@/lib/env";
 
 // Renova a sessão do Supabase (os cookies) antes das páginas da área logada e
-// redireciona para /entrar quem abre o painel sem sessão. A checagem que vale
+// redireciona para /entrar quem abre o painel ou o admin sem sessão. A checagem que vale
 // fica em src/lib/auth.ts; esta é só a rápida.
 export async function proxy(request: NextRequest) {
   let response = NextResponse.next({ request });
@@ -24,7 +24,7 @@ export async function proxy(request: NextRequest) {
 
   const { data } = await supabase.auth.getClaims();
 
-  if (!data?.claims && request.nextUrl.pathname.startsWith("/painel")) {
+  if (!data?.claims && /^\/(painel|admin)(\/|$)/.test(request.nextUrl.pathname)) {
     const redirecionamento = NextResponse.redirect(new URL("/entrar", request.url));
     for (const cookie of response.cookies.getAll()) redirecionamento.cookies.set(cookie);
     return redirecionamento;
@@ -35,5 +35,5 @@ export async function proxy(request: NextRequest) {
 
 // Só as rotas que leem a sessão; o site institucional segue estático.
 export const config = {
-  matcher: ["/painel/:path*", "/entrar/:path*", "/auth/:path*"],
+  matcher: ["/painel/:path*", "/admin/:path*", "/entrar/:path*", "/auth/:path*"],
 };

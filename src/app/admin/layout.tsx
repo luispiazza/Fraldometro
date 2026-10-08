@@ -1,31 +1,27 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { sair } from "@/app/(site)/entrar/acoes";
 import { Logo } from "@/components/marca";
-import { ehAdmin, exigirPerfil } from "@/lib/auth";
+import { exigirAdmin } from "@/lib/auth";
 
-export default async function PainelLayout({ children }: LayoutProps<"/painel">) {
-  const perfil = await exigirPerfil();
-  const admin = await ehAdmin(perfil.id);
+export const metadata: Metadata = { title: "Admin", robots: { index: false } };
+
+export default async function AdminLayout({ children }: LayoutProps<"/admin">) {
+  const perfil = await exigirAdmin();
 
   return (
     <>
       <header className="border-b border-line bg-surface">
         <nav className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-4">
-          <Link href="/painel" className="text-xl">
+          <Link href="/admin" className="flex items-center gap-2 text-xl">
             <Logo />
+            <span className="rounded-full bg-fg px-2 py-0.5 text-xs font-semibold text-bg">admin</span>
           </Link>
           <div className="flex items-center gap-4 text-sm font-semibold whitespace-nowrap sm:gap-5">
             <Link href="/painel" className="hover:text-brand">
-              Minhas páginas
+              Painel
             </Link>
-            {admin && (
-              <Link href="/admin" className="hover:text-brand">
-                Admin
-              </Link>
-            )}
-            <Link href="/painel/conta" className="hover:text-brand">
-              {perfil.nome.split(" ")[0]}
-            </Link>
+            <span className="hidden text-muted sm:inline">{perfil.nome.split(" ")[0]}</span>
             <form action={sair}>
               <button className="text-muted hover:text-fg">Sair</button>
             </form>

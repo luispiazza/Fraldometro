@@ -58,6 +58,17 @@ export const users = pgTable(
   ],
 );
 
+/**
+ * Quem é da equipe do Fraldômetro e abre o /admin. Fica fora de `users` porque o usuário
+ * pode editar a própria linha lá. RLS ligada e sem regras: só o servidor lê e grava.
+ */
+export const admins = pgTable("admins", {
+  userId: uuid("user_id")
+    .primaryKey()
+    .references(() => users.id, { onDelete: "cascade" }),
+  createdAt: criadoEm(),
+}).enableRLS();
+
 /** A página do bebê. */
 export const pages = pgTable(
   "pages",

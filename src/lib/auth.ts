@@ -1,9 +1,9 @@
 import "server-only";
 import { eq } from "drizzle-orm";
-import { redirect } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { cache } from "react";
 import { db } from "@/db";
-import { users } from "@/db/schema";
+import { admins, users } from "@/db/schema";
 import { criarClienteServidor } from "@/lib/supabase/server";
 
 // Checagem de sessão de verdade, feita em cada página e ação da área logada.
@@ -39,5 +39,18 @@ export async function exigirPerfil() {
   await exigirUsuario();
   const perfil = await perfilAtual();
   if (!perfil) redirect("/entrar/perfil");
+  return perfil;
+}
+
+/** Se o usuário é da equipe do Fraldômetro (tabela `admins`). */
+export const ehAdmin = cache(async (userId: string): Promise<boolean> => {
+  const [admin] = await db.select().from(admins).where(eq(admins.userId, userId)).limit(1);
+  return !!admin;
+});
+
+/** Perfil de quem é da equipe. Para os outros, o /admin nem existe (404). */
+export async function exigirAdmin() {
+  const perfil = await exigirPerfil();
+  if (!(await ehAdmin(perfil.id))) notFound();
   return perfil;
 }
