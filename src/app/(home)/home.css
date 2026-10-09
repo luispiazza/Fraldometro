@@ -17,6 +17,17 @@
   }
 }
 
+@keyframes home-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  70% {
+    opacity: 1;
+    transform: scale(1.06);
+  }
+}
+
 @keyframes home-afasta {
   to {
     transform: translateY(-80px) rotate(-4deg);
@@ -53,11 +64,33 @@
       --giro: 4deg;
     }
 
-    /* As mensagens do grupo chegam uma de cada vez. */
+    /* As mensagens do grupo estouram uma de cada vez, do lado de quem mandou. */
     .home-conversa > * {
-      animation: home-surge linear both;
-      animation-timeline: view();
-      animation-range: entry 30% cover 40%;
+      animation-name: home-pop;
+      animation-timing-function: ease-out;
+      animation-fill-mode: both;
+      animation-timeline: --secao;
+      animation-range: cover calc(18% + var(--ordem, 0) * 5%) cover calc(26% + var(--ordem, 0) * 5%);
+      transform-origin: bottom left;
+    }
+    .home-conversa > :nth-child(3) {
+      transform-origin: bottom right;
+    }
+    .home-conversa > :nth-child(2) {
+      --ordem: 0;
+    }
+    .home-conversa > :nth-child(3) {
+      --ordem: 1;
+    }
+    .home-conversa > :nth-child(4) {
+      --ordem: 2;
+    }
+    .home-conversa > :nth-child(5) {
+      --ordem: 3;
+      transform-origin: center;
+    }
+    .home-conversa > :nth-child(6) {
+      --ordem: 4;
     }
 
     /* O celular da abertura sobe e gira um pouco quando a página desce. */
@@ -85,6 +118,18 @@
 @keyframes home-nasce {
   from {
     transform: translateY(70%) scale(0.7);
+  }
+}
+
+@keyframes home-sobe-e-some {
+  0% {
+    transform: translateY(70%) scale(0.7);
+  }
+  30% {
+    transform: none;
+  }
+  100% {
+    transform: translateY(-140vh) scale(1.15);
   }
 }
 
@@ -118,6 +163,7 @@
 
     .home-bola-roxa,
     .home-nasce,
+    .home-sobe-e-some,
     .home-desliza,
     .home-gira,
     .home-onda {
@@ -132,12 +178,20 @@
       animation-range: 0px 900px;
     }
 
-    /* Os círculos sobem do pé da seção (o sol atrás da pilha, o lilás nas perguntas). */
+    /* O sol amarelo sobe do pé da seção, atrás da pilha. */
     .home-nasce {
       animation-name: home-nasce;
       animation-timing-function: ease-out;
       animation-timeline: --secao;
       animation-range: entry 10% cover 50%;
+    }
+
+    /* O círculo lilás das perguntas sobe do pé da seção e, na passagem para o fechamento,
+       continua subindo até sair da tela. */
+    .home-sobe-e-some {
+      animation-name: home-sobe-e-some;
+      animation-timeline: --secao;
+      animation-range: entry 10% exit 100%;
     }
 
     /* A bola azul atravessa o fundo atrás da conversa enquanto a seção passa. */
@@ -163,4 +217,9 @@
       animation-range: entry calc(10% + var(--ordem) * 12%) entry calc(60% + var(--ordem) * 12%);
     }
   }
+}
+
+/* Com o lightbox do exemplo aberto, a home atrás não rola. */
+html:has(dialog[open]) {
+  overflow: hidden;
 }

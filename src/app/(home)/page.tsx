@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { DemoFraldometro } from "@/components/home/demo-fraldometro";
 import { FundoRolagem } from "@/components/home/fundo-rolagem";
+import { LinkExemplo } from "@/components/home/link-exemplo";
 import { Logo } from "@/components/marca";
 import { CONSUMO } from "@/lib/consumo";
 import { COMISSAO_BPS, formatarNumero } from "@/lib/dinheiro";
@@ -77,9 +78,7 @@ export default function Inicio() {
                 <Link href="/entrar" className={botao}>
                   Criar a página do bebê
                 </Link>
-                <Link href="/exemplo/recortes" className={botaoSecundario}>
-                  Ver um exemplo
-                </Link>
+                <LinkExemplo className={botaoSecundario}>Ver um exemplo</LinkExemplo>
               </div>
               <p className="max-w-[52ch] text-sm text-[var(--t-muted)]">
                 Grátis para criar. {comissao} por doação, e o convidado pode cobrir. O Pix cai na conta Mercado Pago de vocês.
@@ -124,9 +123,9 @@ export default function Inicio() {
                 Cada um escolhe quantas fraldas doar e vê quantos dias de fralda está dando. O fraldômetro sobe para todo
                 mundo ver a meta chegando.
               </p>
-              <Link href="/exemplo/placar" className="font-extrabold underline decoration-2 underline-offset-4">
+              <LinkExemplo tema="placar" className="font-extrabold underline decoration-2 underline-offset-4">
                 Ver os três estilos de página
-              </Link>
+              </LinkExemplo>
             </div>
             <div className="relative w-full max-w-[420px] justify-self-center">
               <Conversa />
@@ -151,7 +150,7 @@ export default function Inicio() {
 
           {/* Perguntas */}
           <section id="perguntas" data-fundo={FUNDO.creme} className="home-secao relative mx-auto grid max-w-6xl scroll-mt-6 gap-8 px-5 py-20">
-            <div aria-hidden className="home-nasce pointer-events-none absolute -bottom-44 -left-40 -z-10 h-[360px] w-[360px] rounded-full bg-[#b9a6ff] md:-left-24" />
+            <div aria-hidden className="home-sobe-e-some pointer-events-none absolute -bottom-44 -left-40 -z-10 h-[360px] w-[360px] rounded-full bg-[#b9a6ff] md:-left-24" />
             <h2 className={`home-surge ${titulo2}`}>Perguntas</h2>
             <div className="grid gap-3">
               {PERGUNTAS.map(({ p, r }) => (
