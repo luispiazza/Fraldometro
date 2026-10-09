@@ -1,7 +1,7 @@
 import "server-only";
-import { and, eq } from "drizzle-orm";
+import { and, desc, eq, sql } from "drizzle-orm";
 import { db } from "@/db";
-import { pageMembers, pages, pageTotals } from "@/db/schema";
+import { donations, pageMembers, pages, pageTotals } from "@/db/schema";
 import type { DadosPagina } from "@/components/pagina-do-bebe";
 import { formatarData, formatarMes, urlDaFoto } from "@/lib/pagina";
 import { isTema, TEMA_PADRAO } from "@/themes";
@@ -49,4 +49,61 @@ export async function dadosParaExibir(pagina: Pagina): Promise<DadosPagina> {
     totalFraldas: totais?.totalFraldas ?? 0,
     doadores: totais?.doadores ?? 0,
   };
+}
+
+// Para os pais, "recebido" é o que cai na conta deles: o valor pago menos a comissão
+// (antes da taxa do Mercado Pago, que aparece no extrato de lá).
+const paga = sql`${donations.status} = 'paga'`;
+const recebido = sql<number>`coalesce(sum(${donations.valorCentavos} - ${donations.comissaoCentavos}) filter (where ${paga}), 0)::int`;
+
+/** As páginas do usuário, com fraldas e valor recebido de cada uma. */
+export async function paginasDoUsuario(userId: string) {
+  return db
+    .select({
+      id: pages.id,
+      slug: pages.slug,
+      nomeBebe: pages.nomeBebe,
+      status: pages.status,
+      metaFraldas: pages.metaFraldas,
+      fraldas: sql<number>`coalesce(sum(${donations.fraldas}) filter (where ${paga}), 0)::int`,
+      doadores: sql<number>`count(${donations.id}) filter (where ${paga})::int`,
+      recebido,
+    })
+    .from(pageMembers)
+    .innerJoin(pages, eq(pages.id, pageMembers.pageId))
+    .leftJoin(donations, eq(donations.pageId, pages.id))
+    .where(eq(pageMembers.userId, userId))
+    .groupBy(pages.id)
+    .orderBy(pages.createdAt);
+}
+
+/** Números da página para o painel da família. */
+export async function resumoDaPagina(pageId: string) {
+  const [resumo] = await db
+    .select({
+      fraldas: sql<number>`coalesce(sum(${donations.fraldas}) filter (where ${paga}), 0)::int`,
+      doadores: sql<number>`count(*) filter (where ${paga})::int`,
+      recebido,
+      fraldas7: sql<number>`coalesce(sum(${donations.fraldas}) filter (where ${paga} and ${donations.pagoEm} >= now() - interval '7 days'), 0)::int`,
+      aguardando: sql<number>`count(*) filter (where ${donations.status} = 'aguardando')::int`,
+    })
+    .from(donations)
+    .where(eq(donations.pageId, pageId));
+  return resumo;
+}
+
+/** Doações pagas, da mais recente para a mais antiga: quem doou, quanto e o recado. */
+export async function doacoesPagas(pageId: string) {
+  return db
+    .select({
+      id: donations.id,
+      nome: donations.nomeConvidado,
+      recado: donations.recado,
+      fraldas: donations.fraldas,
+      recebido: sql<number>`(${donations.valorCentavos} - ${donations.comissaoCentavos})::int`,
+      pagoEm: donations.pagoEm,
+    })
+    .from(donations)
+    .where(and(eq(donations.pageId, pageId), paga))
+    .orderBy(desc(donations.pagoEm));
 }

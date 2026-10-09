@@ -3,9 +3,12 @@ import { headers } from "next/headers";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { botaoSecundario } from "@/components/campos";
+import { Cartao, Progresso } from "@/components/numeros";
 import { exigirPerfil } from "@/lib/auth";
+import { diasDeFralda, formatarNumero, formatarReais } from "@/lib/dinheiro";
 import { contaDaPagina } from "@/lib/pagamentos";
-import { paginaDoMembro } from "@/lib/paginas";
+import { formatarDataHora } from "@/lib/pagina";
+import { doacoesPagas, paginaDoMembro, resumoDaPagina } from "@/lib/paginas";
 import { publicarPagina } from "../../acoes-conta";
 import { atualizarPagina } from "../../acoes-pagina";
 import { BotaoPublicar } from "../../form-conta";
@@ -31,7 +34,11 @@ export default async function EditarPagina({ params, searchParams }: PageProps<"
   const criada = (await searchParams).criada === "1";
   const dominio = (await headers()).get("host") ?? "fraldometro";
   const noAr = pagina.status === "no_ar";
-  const conta = await contaDaPagina(pagina.id);
+  const [conta, resumo, doacoes] = await Promise.all([
+    contaDaPagina(pagina.id),
+    resumoDaPagina(pagina.id),
+    doacoesPagas(pagina.id),
+  ]);
   const passo: keyof typeof PASSO = conta ? "publicar" : "conectar";
 
   return (
@@ -64,6 +71,61 @@ export default async function EditarPagina({ params, searchParams }: PageProps<"
         </div>
       </section>
 
+      {(noAr || doacoes.length > 0) && (
+        <section className="grid gap-3">
+          <h2 className="text-xl font-semibold">Como está indo</h2>
+          <div className="grid content-start gap-2 rounded-xl border border-line bg-surface p-5">
+            <span className="text-sm text-muted">Fraldas</span>
+            <Progresso total={resumo.fraldas} meta={pagina.metaFraldas} />
+            {resumo.fraldas > 0 && (
+              <span className="text-sm text-muted">
+                Dá para uns {formatarNumero(diasDeFralda(resumo.fraldas))} dias de fralda
+                {resumo.fraldas7 > 0 && ` · ${formatarNumero(resumo.fraldas7)} chegaram nos últimos 7 dias`}
+              </span>
+            )}
+          </div>
+          <div className="grid gap-3 sm:grid-cols-3">
+            <Cartao rotulo="Recebido" valor={formatarReais(resumo.recebido)} detalhe="antes da taxa do Mercado Pago" />
+            <Cartao
+              rotulo="Pessoas que doaram"
+              valor={formatarNumero(resumo.doadores)}
+              detalhe={resumo.aguardando ? `${formatarNumero(resumo.aguardando)} Pix aguardando pagamento` : undefined}
+            />
+            <Cartao
+              rotulo="Média por pessoa"
+              valor={resumo.doadores ? `${formatarNumero(Math.round(resumo.fraldas / resumo.doadores))} fraldas` : "—"}
+              detalhe={resumo.doadores ? formatarReais(Math.round(resumo.recebido / resumo.doadores)) : undefined}
+            />
+          </div>
+        </section>
+      )}
+
+      {(noAr || doacoes.length > 0) && (
+        <section className="grid gap-3">
+          <h2 className="text-xl font-semibold">Quem doou</h2>
+          {doacoes.length === 0 ? (
+            <p className="text-muted">Ninguém ainda. Mande o link no grupo da família!</p>
+          ) : (
+            <ul className="grid max-h-[480px] divide-y divide-line overflow-y-auto rounded-xl border border-line bg-surface">
+              {doacoes.map((d) => (
+                <li key={d.id} className="grid gap-1 px-5 py-3">
+                  <span className="flex flex-wrap items-baseline justify-between gap-x-4">
+                    <span className="font-semibold">{d.nome}</span>
+                    <span className="text-sm tabular-nums">
+                      {formatarNumero(d.fraldas)} {d.fraldas === 1 ? "fralda" : "fraldas"} ·{" "}
+                      <span className="text-muted">{formatarReais(d.recebido)}</span>
+                    </span>
+                  </span>
+                  {d.recado && <p className="text-sm">“{d.recado}”</p>}
+                  <span className="text-xs text-muted tabular-nums">{formatarDataHora(d.pagoEm)}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+      )}
+
+      <h2 className="-mb-4 text-xl font-semibold">Editar a página</h2>
       <FormPagina
         inicial={{
           nomeBebe: pagina.nomeBebe,

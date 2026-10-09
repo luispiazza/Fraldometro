@@ -1,27 +1,15 @@
-import { eq } from "drizzle-orm";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { db } from "@/db";
-import { pageMembers, pages } from "@/db/schema";
+import { Progresso, Selo, STATUS_PAGINA } from "@/components/numeros";
 import { exigirPerfil } from "@/lib/auth";
+import { formatarNumero, formatarReais } from "@/lib/dinheiro";
+import { paginasDoUsuario } from "@/lib/paginas";
 
 export const metadata: Metadata = { title: "Minhas páginas" };
 
-const STATUS: Record<(typeof pages.$inferSelect)["status"], string> = {
-  rascunho: "Rascunho",
-  no_ar: "No ar",
-  encerrada: "Encerrada",
-  suspensa: "Suspensa",
-};
-
 export default async function Painel() {
   const perfil = await exigirPerfil();
-  const minhas = await db
-    .select({ id: pages.id, slug: pages.slug, nomeBebe: pages.nomeBebe, status: pages.status })
-    .from(pageMembers)
-    .innerJoin(pages, eq(pages.id, pageMembers.pageId))
-    .where(eq(pageMembers.userId, perfil.id))
-    .orderBy(pages.createdAt);
+  const minhas = await paginasDoUsuario(perfil.id);
 
   return (
     <div className="mx-auto grid max-w-5xl gap-8 px-4 py-12">
@@ -44,11 +32,21 @@ export default async function Painel() {
               <li key={p.id}>
                 <Link
                   href={`/painel/paginas/${p.id}`}
-                  className="grid gap-1 rounded-xl border border-line bg-surface p-5 hover:border-fg"
+                  className="grid h-full content-start gap-3 rounded-xl border border-line bg-surface p-5 hover:border-fg"
                 >
-                  <span className="text-lg font-semibold">{p.nomeBebe}</span>
-                  <span className="text-sm text-muted">
-                    {STATUS[p.status]} · /{p.slug}
+                  <span className="grid gap-1">
+                    <span className="flex items-center justify-between gap-3">
+                      <span className="text-lg font-semibold">{p.nomeBebe}</span>
+                      <Selo status={p.status} texto={STATUS_PAGINA[p.status]} />
+                    </span>
+                    <span className="text-sm text-muted">/{p.slug}</span>
+                  </span>
+                  <Progresso total={p.fraldas} meta={p.metaFraldas} />
+                  <span className="flex justify-between gap-3 text-sm">
+                    <span className="text-muted">
+                      {formatarNumero(p.doadores)} {p.doadores === 1 ? "pessoa doou" : "pessoas doaram"}
+                    </span>
+                    <strong className="tabular-nums">{formatarReais(p.recebido)}</strong>
                   </span>
                 </Link>
               </li>

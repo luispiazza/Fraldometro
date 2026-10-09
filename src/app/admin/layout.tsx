@@ -6,6 +6,13 @@ import { exigirAdmin } from "@/lib/auth";
 
 export const metadata: Metadata = { title: "Admin", robots: { index: false } };
 
+const MENU = [
+  ["/admin", "Visão geral"],
+  ["/admin/paginas", "Páginas"],
+  ["/admin/doacoes", "Doações"],
+  ["/admin/usuarios", "Usuários"],
+] as const;
+
 export default async function AdminLayout({ children }: LayoutProps<"/admin">) {
   const perfil = await exigirAdmin();
 
@@ -27,6 +34,13 @@ export default async function AdminLayout({ children }: LayoutProps<"/admin">) {
             </form>
           </div>
         </nav>
+        <div className="mx-auto flex max-w-5xl gap-5 overflow-x-auto px-4 pb-3 text-sm font-semibold whitespace-nowrap">
+          {MENU.map(([href, rotulo]) => (
+            <Link key={href} href={href} className="text-muted hover:text-fg">
+              {rotulo}
+            </Link>
+          ))}
+        </div>
       </header>
       <main className="flex-1">{children}</main>
     </>

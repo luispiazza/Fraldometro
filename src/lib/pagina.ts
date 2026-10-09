@@ -77,3 +77,17 @@ export function reaisParaCentavos(texto: string): number {
   if (!/^\d+(\.\d{1,2})?$/.test(limpo)) return NaN;
   return Math.round(Number(limpo) * 100);
 }
+
+const dataHora = new Intl.DateTimeFormat("pt-BR", {
+  day: "2-digit",
+  month: "2-digit",
+  year: "2-digit",
+  hour: "2-digit",
+  minute: "2-digit",
+  timeZone: "America/Sao_Paulo",
+});
+
+/** 2026-12-20 15:04 → "20/12/26, 15:04" (horário de Brasília) */
+export function formatarDataHora(data: Date | null): string {
+  return data ? dataHora.format(data) : "—";
+}
