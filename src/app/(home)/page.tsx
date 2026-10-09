@@ -16,7 +16,7 @@ const comissao = `${COMISSAO_BPS / 100}%`;
 
 const FUNDO = {
   creme: "#fff6ef",
-  roxo: "#b9a6ff",
+  lavanda: "#eee8ff",
   pessego: "#ffe4d6",
   amarelo: "#ffc531",
 };
@@ -90,12 +90,11 @@ export default function Inicio() {
           </section>
 
           {/* B. A pilha */}
-          <section data-fundo={FUNDO.roxo} className="home-secao relative mx-auto grid max-w-6xl items-center gap-12 px-5 py-28 md:grid-cols-2">
+          <section data-fundo={FUNDO.lavanda} className="home-secao relative mx-auto grid max-w-6xl items-center gap-12 px-5 py-28 md:grid-cols-2">
             <div aria-hidden className="home-nasce pointer-events-none absolute -right-24 -bottom-36 -z-10 h-[300px] w-[300px] rounded-full bg-[#ffc531] md:-right-16" />
             <div className="home-surge grid gap-5">
               <h2 className={titulo2}>Um bebê usa umas 4.000 fraldas. Mais da metade é M e G.</h2>
-              {/* No roxo, o cinza do tema fica abaixo do contraste mínimo. */}
-              <p className={`${texto} !text-[#3d3430]`}>
+              <p className={texto}>
                 Com o Pix, vocês compram cada tamanho quando chegar a hora, em vez de acumular pacotes de um tamanho só.
               </p>
             </div>
