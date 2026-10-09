@@ -85,19 +85,16 @@ export default function Inicio() {
                 Grátis para criar. {comissao} por doação, e o convidado pode cobrir. O Pix cai na conta Mercado Pago de vocês.
               </p>
             </div>
-            <div className="home-afasta relative">
-              <Forma className="home-cai -top-4 left-[8%] h-12 w-12 bg-[#ff5a36] md:left-0" borda />
-              <Forma className="home-cai -right-2 bottom-24 h-7 w-7 bg-[#ffc531]" borda />
+            <div className="home-afasta">
               <DemoFraldometro />
             </div>
           </section>
 
           {/* B. A pilha */}
           <section data-fundo={FUNDO.lavanda} className="home-secao relative mx-auto grid max-w-6xl items-center gap-12 px-5 py-28 md:grid-cols-2">
-            <div aria-hidden className="pointer-events-none absolute right-0 bottom-0 h-[150px] w-[300px] overflow-hidden md:-right-16">
+            <div aria-hidden className="pointer-events-none absolute right-0 bottom-0 -z-10 h-[150px] w-[300px] overflow-hidden md:-right-16">
               <div className="home-nasce h-[300px] w-[300px] rounded-full bg-[#ffc531]" />
             </div>
-            <Bola className="home-rola top-10 right-6 md:top-16 md:right-auto md:left-[46%]" />
             <div className="home-surge grid gap-5">
               <h2 className={titulo2}>Um bebê usa umas 4.000 fraldas. Mais da metade é M e G.</h2>
               <p className={texto}>
@@ -122,6 +119,7 @@ export default function Inicio() {
 
           {/* C. No grupo da família */}
           <section data-fundo={FUNDO.pessego} className="home-secao relative mx-auto grid max-w-6xl items-center gap-12 px-5 py-28 md:grid-cols-2">
+            <div aria-hidden className="home-desliza pointer-events-none absolute top-1/2 -left-40 -z-10 h-[420px] w-[420px] -translate-y-1/2 rounded-full bg-[#7cc6ff] md:-left-24 md:h-[520px] md:w-[520px]" />
             <div className="home-surge grid justify-items-start gap-5 md:order-2">
               <h2 className={titulo2}>Manda o link no grupo. As fraldas vêm via Pix.</h2>
               <p className={texto}>
@@ -133,9 +131,6 @@ export default function Inicio() {
               </Link>
             </div>
             <div className="relative w-full max-w-[420px] justify-self-center">
-              {CONFETES.map((c, i) => (
-                <Forma key={i} className={`home-pop ${c.lugar} ${c.tamanho} ${c.cor}`} borda={c.borda} ordem={i} />
-              ))}
               <Conversa />
             </div>
           </section>
@@ -157,7 +152,10 @@ export default function Inicio() {
           </section>
 
           {/* Perguntas */}
-          <section id="perguntas" data-fundo={FUNDO.creme} className="home-secao relative mx-auto grid max-w-3xl scroll-mt-6 gap-8 px-5 py-20">
+          <section id="perguntas" data-fundo={FUNDO.creme} className="home-secao relative mx-auto grid max-w-6xl scroll-mt-6 gap-8 px-5 py-20">
+            <div aria-hidden className="pointer-events-none absolute -right-32 bottom-0 -z-10 h-[180px] w-[360px] overflow-hidden md:-right-20">
+              <div className="home-nasce h-[360px] w-[360px] rounded-full bg-[#b9a6ff]" />
+            </div>
             <h2 className={`home-surge ${titulo2}`}>Perguntas</h2>
             <div className="grid gap-3">
               {PERGUNTAS.map(({ p, r }) => (
@@ -176,7 +174,7 @@ export default function Inicio() {
 
           {/* Fechamento */}
           <section data-fundo={FUNDO.amarelo} className="home-secao relative mx-auto grid min-h-[65vh] max-w-6xl content-center justify-items-start gap-6 px-5 py-24">
-            <div aria-hidden className="pointer-events-none absolute top-1/2 right-[-180px] h-0 w-0 md:right-[12%]">
+            <div aria-hidden className="pointer-events-none absolute top-1/2 right-[-180px] -z-10 h-0 w-0 md:right-[12%]">
               {[560, 400, 240].map((d, i) => (
                 <span
                   key={d}
@@ -185,10 +183,10 @@ export default function Inicio() {
                 />
               ))}
             </div>
-            <h2 className="home-surge tema-display relative max-w-[16ch] text-[clamp(36px,5.4vw,64px)] leading-[1.02]">
+            <h2 className="home-surge tema-display max-w-[16ch] text-[clamp(36px,5.4vw,64px)] leading-[1.02]">
               Faça a página do bebê antes do chá
             </h2>
-            <Link href="/entrar" className={`${botao} relative`}>
+            <Link href="/entrar" className={botao}>
               Criar a página do bebê
             </Link>
           </section>
@@ -204,40 +202,6 @@ export default function Inicio() {
           </div>
         </footer>
     </FundoRolagem>
-  );
-}
-
-// Confetes em volta da conversa, na ordem em que estouram.
-const CONFETES = [
-  { lugar: "-top-5 -left-4", tamanho: "h-9 w-9", cor: "bg-[#ff5a36]", borda: true },
-  { lugar: "top-16 -right-6", tamanho: "h-5 w-5", cor: "bg-[#7cc6ff]", borda: true },
-  { lugar: "top-1/2 -left-7", tamanho: "h-4 w-4", cor: "bg-[#b9a6ff]", borda: false },
-  { lugar: "-right-5 bottom-20", tamanho: "h-10 w-10", cor: "bg-[#ffc531]", borda: true },
-  { lugar: "-bottom-6 left-10", tamanho: "h-6 w-6", cor: "bg-[#5ce1b4]", borda: true },
-  { lugar: "-top-3 right-16", tamanho: "h-3.5 w-3.5", cor: "bg-[#26211f]", borda: false },
-];
-
-/** Um círculo decorativo do tema Recortes. */
-function Forma({ className, borda = false, ordem }: { className: string; borda?: boolean; ordem?: number }) {
-  return (
-    <span
-      aria-hidden
-      className={`pointer-events-none absolute z-[2] rounded-full ${borda ? "border-[2.5px] border-[#26211f]" : ""} ${className}`}
-      style={ordem === undefined ? undefined : { ["--ordem" as string]: ordem }}
-    />
-  );
-}
-
-/** A bola azul que entra rolando: o ponto branco deixa o giro visível. */
-function Bola({ className }: { className: string }) {
-  return (
-    <span
-      aria-hidden
-      className={`pointer-events-none absolute h-16 w-16 rounded-full border-[2.5px] border-[#26211f] bg-[#7cc6ff] shadow-[4px_4px_0_#26211f] md:h-20 md:w-20 ${className}`}
-    >
-      <span className="absolute top-2.5 left-3 h-4 w-4 rounded-full bg-white md:h-5 md:w-5" />
-      <span className="absolute right-3 bottom-3 h-2.5 w-2.5 rounded-full bg-white" />
-    </span>
   );
 }
 

@@ -82,30 +82,18 @@
   }
 }
 
-@keyframes home-cai {
-  to {
-    transform: translate(-60px, 340px) rotate(260deg);
-  }
-}
-
 @keyframes home-nasce {
   from {
     transform: translateY(100%);
   }
 }
 
-@keyframes home-rola {
+@keyframes home-desliza {
   from {
-    transform: translateX(-70vw) rotate(-720deg);
+    transform: translate(-55%, 15%) scale(0.6);
   }
-}
-
-@keyframes home-pop {
-  0% {
-    transform: scale(0);
-  }
-  70% {
-    transform: scale(1.25);
+  to {
+    transform: translate(20%, -35%) scale(1.1);
   }
 }
 
@@ -129,10 +117,8 @@
     }
 
     .home-bola-roxa,
-    .home-cai,
     .home-nasce,
-    .home-rola,
-    .home-pop,
+    .home-desliza,
     .home-gira,
     .home-onda {
       animation-fill-mode: both;
@@ -146,14 +132,7 @@
       animation-range: 0px 900px;
     }
 
-    /* A bolinha laranja cai enquanto a abertura sai da tela. */
-    .home-cai {
-      animation-name: home-cai;
-      animation-timeline: --secao;
-      animation-range: exit 0% exit 100%;
-    }
-
-    /* O sol amarelo nasce atrás da pilha. */
+    /* Os semicírculos nascem no pé da seção (o sol atrás da pilha, o lilás nas perguntas). */
     .home-nasce {
       animation-name: home-nasce;
       animation-timing-function: ease-out;
@@ -161,20 +140,11 @@
       animation-range: entry 10% cover 50%;
     }
 
-    /* A bola azul entra rolando pela esquerda. */
-    .home-rola {
-      animation-name: home-rola;
-      animation-timing-function: cubic-bezier(0.2, 0.7, 0.3, 1);
+    /* A bola azul atravessa o fundo atrás da conversa enquanto a seção passa. */
+    .home-desliza {
+      animation-name: home-desliza;
       animation-timeline: --secao;
-      animation-range: entry 0% cover 45%;
-    }
-
-    /* Confetes estouram em volta da conversa, um depois do outro. */
-    .home-pop {
-      animation-name: home-pop;
-      animation-timing-function: ease-out;
-      animation-timeline: --secao;
-      animation-range: cover calc(25% + var(--ordem) * 3%) cover calc(33% + var(--ordem) * 3%);
+      animation-range: cover 0% cover 100%;
     }
 
     /* Os números dos passos chegam girando. */
