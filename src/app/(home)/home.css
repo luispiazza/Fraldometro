@@ -68,3 +68,129 @@
     }
   }
 }
+
+/*
+ * Formas do tema Recortes que brincam com a rolagem. Cada seção da home é uma linha do tempo
+ * (--secao), e as formas dentro dela andam conforme a seção passa pela tela. Sem animação,
+ * todas ficam paradas na posição final, que é a que está no HTML.
+ */
+
+@keyframes home-bola-roxa {
+  to {
+    transform: translate(-28vw, 75vh) scale(2.6);
+    opacity: 0;
+  }
+}
+
+@keyframes home-cai {
+  to {
+    transform: translate(-60px, 340px) rotate(260deg);
+  }
+}
+
+@keyframes home-nasce {
+  from {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes home-rola {
+  from {
+    transform: translateX(-70vw) rotate(-720deg);
+  }
+}
+
+@keyframes home-pop {
+  0% {
+    transform: scale(0);
+  }
+  70% {
+    transform: scale(1.25);
+  }
+}
+
+@keyframes home-gira {
+  from {
+    transform: rotate(-200deg) scale(0.2);
+  }
+}
+
+@keyframes home-onda {
+  from {
+    transform: scale(0.2);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .home-secao {
+      view-timeline-name: --secao;
+    }
+
+    .home-bola-roxa,
+    .home-cai,
+    .home-nasce,
+    .home-rola,
+    .home-pop,
+    .home-gira,
+    .home-onda {
+      animation-fill-mode: both;
+      animation-timing-function: linear;
+    }
+
+    /* A bola roxa da abertura cresce, desce e vira o fundo lavanda da pilha. */
+    .home-bola-roxa {
+      animation-name: home-bola-roxa;
+      animation-timeline: scroll(root);
+      animation-range: 0px 900px;
+    }
+
+    /* A bolinha laranja cai enquanto a abertura sai da tela. */
+    .home-cai {
+      animation-name: home-cai;
+      animation-timeline: --secao;
+      animation-range: exit 0% exit 100%;
+    }
+
+    /* O sol amarelo nasce atrás da pilha. */
+    .home-nasce {
+      animation-name: home-nasce;
+      animation-timing-function: ease-out;
+      animation-timeline: --secao;
+      animation-range: entry 10% cover 50%;
+    }
+
+    /* A bola azul entra rolando pela esquerda. */
+    .home-rola {
+      animation-name: home-rola;
+      animation-timing-function: cubic-bezier(0.2, 0.7, 0.3, 1);
+      animation-timeline: --secao;
+      animation-range: entry 0% cover 45%;
+    }
+
+    /* Confetes estouram em volta da conversa, um depois do outro. */
+    .home-pop {
+      animation-name: home-pop;
+      animation-timing-function: ease-out;
+      animation-timeline: --secao;
+      animation-range: cover calc(25% + var(--ordem) * 3%) cover calc(33% + var(--ordem) * 3%);
+    }
+
+    /* Os números dos passos chegam girando. */
+    .home-gira {
+      animation-name: home-gira;
+      animation-timing-function: ease-out;
+      animation-timeline: view();
+      animation-range: entry 20% cover 35%;
+    }
+
+    /* Ondas que se abrem atrás do convite final. */
+    .home-onda {
+      animation-name: home-onda;
+      animation-timing-function: ease-out;
+      animation-timeline: --secao;
+      animation-range: entry calc(10% + var(--ordem) * 12%) entry calc(60% + var(--ordem) * 12%);
+    }
+  }
+}

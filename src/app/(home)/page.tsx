@@ -45,7 +45,7 @@ export default function Inicio() {
       // Texto escuro no botão laranja: o branco do tema fica abaixo do contraste mínimo.
       style={{ ["--t-cta-fg" as string]: "#26211f" }}
     >
-        <div aria-hidden className="pointer-events-none absolute -top-24 -right-24 h-[300px] w-[300px] rounded-full bg-[#b9a6ff]" />
+        <div aria-hidden className="home-bola-roxa pointer-events-none absolute -top-24 -right-24 h-[300px] w-[300px] rounded-full bg-[#b9a6ff]" />
 
         <header className="relative z-[1] mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-5 text-[var(--t-fg)]">
           <Link href="/" className="font-sans text-xl">
@@ -64,7 +64,7 @@ export default function Inicio() {
 
         <main className="relative z-[1] text-[var(--t-fg)]">
           {/* A. O produto na mão */}
-          <section data-fundo={FUNDO.creme} className="mx-auto grid max-w-6xl items-center gap-12 px-5 pt-8 pb-20 md:min-h-[calc(100svh-5rem)] md:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
+          <section data-fundo={FUNDO.creme} className="home-secao relative mx-auto grid max-w-6xl items-center gap-12 px-5 pt-8 pb-20 md:min-h-[calc(100svh-5rem)] md:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
             <div className="grid justify-items-start gap-5">
               <h1 className="tema-display text-[clamp(42px,6vw,72px)] leading-[0.98] text-balance">
                 Chá de fraldas sem pilha de pacotes.
@@ -85,20 +85,26 @@ export default function Inicio() {
                 Grátis para criar. {comissao} por doação, e o convidado pode cobrir. O Pix cai na conta Mercado Pago de vocês.
               </p>
             </div>
-            <div className="home-afasta">
+            <div className="home-afasta relative">
+              <Forma className="home-cai -top-4 left-[8%] h-12 w-12 bg-[#ff5a36] md:left-0" borda />
+              <Forma className="home-cai -right-2 bottom-24 h-7 w-7 bg-[#ffc531]" borda />
               <DemoFraldometro />
             </div>
           </section>
 
           {/* B. A pilha */}
-          <section data-fundo={FUNDO.lavanda} className="mx-auto grid max-w-6xl items-center gap-12 px-5 py-28 md:grid-cols-2">
+          <section data-fundo={FUNDO.lavanda} className="home-secao relative mx-auto grid max-w-6xl items-center gap-12 px-5 py-28 md:grid-cols-2">
+            <div aria-hidden className="pointer-events-none absolute right-0 bottom-0 h-[150px] w-[300px] overflow-hidden md:-right-16">
+              <div className="home-nasce h-[300px] w-[300px] rounded-full bg-[#ffc531]" />
+            </div>
+            <Bola className="home-rola top-10 right-6 md:top-16 md:right-auto md:left-[46%]" />
             <div className="home-surge grid gap-5">
               <h2 className={titulo2}>Um bebê usa umas 4.000 fraldas. Mais da metade é M e G.</h2>
               <p className={texto}>
                 Com o Pix, vocês compram cada tamanho quando chegar a hora, em vez de acumular pacotes de um tamanho só.
               </p>
             </div>
-            <ol className="home-pilha grid justify-items-center gap-2" aria-label="Fraldas por tamanho">
+            <ol className="home-pilha relative grid justify-items-center gap-2" aria-label="Fraldas por tamanho">
               {PILHA.map((c, i) => (
                 <li
                   key={c.tamanho}
@@ -115,7 +121,7 @@ export default function Inicio() {
           </section>
 
           {/* C. No grupo da família */}
-          <section data-fundo={FUNDO.pessego} className="mx-auto grid max-w-6xl items-center gap-12 px-5 py-28 md:grid-cols-2">
+          <section data-fundo={FUNDO.pessego} className="home-secao relative mx-auto grid max-w-6xl items-center gap-12 px-5 py-28 md:grid-cols-2">
             <div className="home-surge grid justify-items-start gap-5 md:order-2">
               <h2 className={titulo2}>Manda o link no grupo. As fraldas vêm via Pix.</h2>
               <p className={texto}>
@@ -126,16 +132,21 @@ export default function Inicio() {
                 Ver os três estilos de página
               </Link>
             </div>
-            <Conversa />
+            <div className="relative w-full max-w-[420px] justify-self-center">
+              {CONFETES.map((c, i) => (
+                <Forma key={i} className={`home-pop ${c.lugar} ${c.tamanho} ${c.cor}`} borda={c.borda} ordem={i} />
+              ))}
+              <Conversa />
+            </div>
           </section>
 
           {/* Como funciona */}
-          <section id="como-funciona" data-fundo={FUNDO.creme} className="mx-auto grid max-w-6xl scroll-mt-6 gap-10 px-5 py-28">
+          <section id="como-funciona" data-fundo={FUNDO.creme} className="home-secao relative mx-auto grid max-w-6xl scroll-mt-6 gap-10 px-5 py-28">
             <h2 className={`home-surge ${titulo2}`}>Como funciona</h2>
             <ol className="grid gap-5 md:grid-cols-3">
               {PASSOS.map((p, i) => (
                 <li key={p.titulo} className="home-surge tema-card grid content-start gap-2 p-6">
-                  <span className="tema-display grid h-10 w-10 place-items-center rounded-full border-[2.5px] border-[#26211f] bg-[#ffc531] text-lg">
+                  <span className="home-gira tema-display grid h-12 w-12 place-items-center rounded-full border-[2.5px] border-[#26211f] bg-[#ffc531] text-xl">
                     {i + 1}
                   </span>
                   <h3 className="mt-2 text-xl font-extrabold">{p.titulo}</h3>
@@ -146,7 +157,7 @@ export default function Inicio() {
           </section>
 
           {/* Perguntas */}
-          <section id="perguntas" data-fundo={FUNDO.creme} className="mx-auto grid max-w-3xl scroll-mt-6 gap-8 px-5 py-20">
+          <section id="perguntas" data-fundo={FUNDO.creme} className="home-secao relative mx-auto grid max-w-3xl scroll-mt-6 gap-8 px-5 py-20">
             <h2 className={`home-surge ${titulo2}`}>Perguntas</h2>
             <div className="grid gap-3">
               {PERGUNTAS.map(({ p, r }) => (
@@ -164,11 +175,20 @@ export default function Inicio() {
           </section>
 
           {/* Fechamento */}
-          <section data-fundo={FUNDO.amarelo} className="mx-auto grid min-h-[65vh] max-w-6xl content-center justify-items-start gap-6 px-5 py-24">
-            <h2 className="home-surge tema-display max-w-[16ch] text-[clamp(36px,5.4vw,64px)] leading-[1.02]">
+          <section data-fundo={FUNDO.amarelo} className="home-secao relative mx-auto grid min-h-[65vh] max-w-6xl content-center justify-items-start gap-6 px-5 py-24">
+            <div aria-hidden className="pointer-events-none absolute top-1/2 right-[-180px] h-0 w-0 md:right-[12%]">
+              {[560, 400, 240].map((d, i) => (
+                <span
+                  key={d}
+                  className={`home-onda absolute rounded-full border-[2.5px] border-[#26211f] ${i === 2 ? "bg-[#ff5a36]" : ""}`}
+                  style={{ width: d, height: d, left: -d / 2, top: -d / 2, ["--ordem" as string]: i }}
+                />
+              ))}
+            </div>
+            <h2 className="home-surge tema-display relative max-w-[16ch] text-[clamp(36px,5.4vw,64px)] leading-[1.02]">
               Faça a página do bebê antes do chá
             </h2>
-            <Link href="/entrar" className={botao}>
+            <Link href="/entrar" className={`${botao} relative`}>
               Criar a página do bebê
             </Link>
           </section>
@@ -187,10 +207,44 @@ export default function Inicio() {
   );
 }
 
+// Confetes em volta da conversa, na ordem em que estouram.
+const CONFETES = [
+  { lugar: "-top-5 -left-4", tamanho: "h-9 w-9", cor: "bg-[#ff5a36]", borda: true },
+  { lugar: "top-16 -right-6", tamanho: "h-5 w-5", cor: "bg-[#7cc6ff]", borda: true },
+  { lugar: "top-1/2 -left-7", tamanho: "h-4 w-4", cor: "bg-[#b9a6ff]", borda: false },
+  { lugar: "-right-5 bottom-20", tamanho: "h-10 w-10", cor: "bg-[#ffc531]", borda: true },
+  { lugar: "-bottom-6 left-10", tamanho: "h-6 w-6", cor: "bg-[#5ce1b4]", borda: true },
+  { lugar: "-top-3 right-16", tamanho: "h-3.5 w-3.5", cor: "bg-[#26211f]", borda: false },
+];
+
+/** Um círculo decorativo do tema Recortes. */
+function Forma({ className, borda = false, ordem }: { className: string; borda?: boolean; ordem?: number }) {
+  return (
+    <span
+      aria-hidden
+      className={`pointer-events-none absolute z-[2] rounded-full ${borda ? "border-[2.5px] border-[#26211f]" : ""} ${className}`}
+      style={ordem === undefined ? undefined : { ["--ordem" as string]: ordem }}
+    />
+  );
+}
+
+/** A bola azul que entra rolando: o ponto branco deixa o giro visível. */
+function Bola({ className }: { className: string }) {
+  return (
+    <span
+      aria-hidden
+      className={`pointer-events-none absolute h-16 w-16 rounded-full border-[2.5px] border-[#26211f] bg-[#7cc6ff] shadow-[4px_4px_0_#26211f] md:h-20 md:w-20 ${className}`}
+    >
+      <span className="absolute top-2.5 left-3 h-4 w-4 rounded-full bg-white md:h-5 md:w-5" />
+      <span className="absolute right-3 bottom-3 h-2.5 w-2.5 rounded-full bg-white" />
+    </span>
+  );
+}
+
 // Ilustração: uma conversa de família recebendo o link. Nomes inventados.
 function Conversa() {
   return (
-    <figure className="home-conversa tema-card grid w-full max-w-[420px] gap-2.5 justify-self-center p-4 shadow-[6px_6px_0_#26211f]">
+    <figure className="home-conversa tema-card relative grid w-full max-w-[420px] gap-2.5 p-4 shadow-[6px_6px_0_#26211f]">
       <figcaption className="sr-only">Exemplo de conversa no grupo da família quando o link do chá é compartilhado.</figcaption>
       <div className="flex items-center gap-2.5 border-b-2 border-[var(--t-track)] pb-3">
         <span aria-hidden className="h-9 w-9 rounded-full border-2 border-[#26211f] bg-[#ffc531]" />

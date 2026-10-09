@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { PaginaDoBebe } from "@/components/pagina-do-bebe";
-import { contracao } from "@/lib/pagina";
+import { artigo, contracao } from "@/lib/pagina";
 import { dadosParaExibir, paginaNoAr } from "@/lib/paginas";
 import { criarDoacao } from "./acoes-doacao";
 
@@ -10,8 +10,16 @@ import { criarDoacao } from "./acoes-doacao";
 export async function generateMetadata({ params }: PageProps<"/[slug]">): Promise<Metadata> {
   const pagina = await paginaNoAr((await params).slug);
   if (!pagina) return {};
-  // Toda página do bebê fica fora dos buscadores (ver /como-funciona).
-  return { title: `Chá ${contracao(pagina.sexo)} ${pagina.nomeBebe}`, robots: { index: false, follow: false } };
+  const titulo = `Chá ${contracao(pagina.sexo)} ${pagina.nomeBebe}`;
+  const descricao = pagina.recado?.trim() || `Escolha quantas fraldas doar para ${artigo(pagina.sexo) || ""} ${pagina.nomeBebe}, via Pix.`.replace("  ", " ");
+  return {
+    title: titulo,
+    description: descricao,
+    // O link compartilhado no grupo mostra o chá, não a home.
+    openGraph: { type: "website", locale: "pt_BR", siteName: "Fraldômetro", title: titulo, description: descricao, url: `/${pagina.slug}` },
+    // Toda página do bebê fica fora dos buscadores (ver /como-funciona).
+    robots: { index: false, follow: false },
+  };
 }
 
 export default async function PaginaPublica({ params }: PageProps<"/[slug]">) {
