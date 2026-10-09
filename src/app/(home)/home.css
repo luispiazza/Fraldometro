@@ -1,0 +1,70 @@
+/*
+ * Movimento da home, preso à rolagem (scroll-driven animations).
+ * Navegador sem suporte ou quem pediu menos movimento vê tudo parado e no lugar.
+ */
+
+@keyframes home-surge {
+  from {
+    opacity: 0;
+    transform: translateY(48px);
+  }
+}
+
+@keyframes home-empilha {
+  from {
+    opacity: 0;
+    transform: translate(var(--de, 0), -40px) rotate(var(--giro, 0));
+  }
+}
+
+@keyframes home-afasta {
+  to {
+    transform: translateY(-80px) rotate(-4deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    /* Entra subindo quando aparece na tela. */
+    .home-surge {
+      animation: home-surge linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 70%;
+    }
+
+    /* As fraldas da pilha caem de lados alternados e se empilham, da base para o topo:
+       todas seguem a rolagem da pilha inteira, e --ordem (0 = base) atrasa cada uma. */
+    .home-pilha {
+      view-timeline-name: --pilha;
+    }
+    .home-pilha > * {
+      animation-name: home-empilha;
+      animation-timing-function: ease-out;
+      animation-fill-mode: both;
+      animation-timeline: --pilha;
+      animation-range: cover calc(8% + var(--ordem) * 5%) cover calc(22% + var(--ordem) * 5%);
+    }
+    .home-pilha > :nth-child(odd) {
+      --de: -18%;
+      --giro: -4deg;
+    }
+    .home-pilha > :nth-child(even) {
+      --de: 18%;
+      --giro: 4deg;
+    }
+
+    /* As mensagens do grupo chegam uma de cada vez. */
+    .home-conversa > * {
+      animation: home-surge linear both;
+      animation-timeline: view();
+      animation-range: entry 30% cover 40%;
+    }
+
+    /* O celular da abertura sobe e gira um pouco quando a página desce. */
+    .home-afasta {
+      animation: home-afasta linear both;
+      animation-timeline: view();
+      animation-range: exit 0% exit 100%;
+    }
+  }
+}

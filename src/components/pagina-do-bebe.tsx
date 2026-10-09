@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { TemaId } from "@/themes";
+import { CONSUMO } from "@/lib/consumo";
 import { formatarNumero } from "@/lib/dinheiro";
 import { artigo, contracao, type Sexo } from "@/lib/pagina";
 import { Doar, type AcaoDoar } from "./doar";
@@ -20,15 +21,6 @@ export type DadosPagina = {
   totalFraldas: number;
   doadores: number;
 };
-
-const CONSUMO = [
-  { tamanho: "RN", idade: "0 a 40 dias", porDia: "7 a 8", fraldas: 320 },
-  { tamanho: "P", idade: "2 a 4 m", porDia: "6", fraldas: 440 },
-  { tamanho: "M", idade: "5 a 10 m", porDia: "5", fraldas: 920 },
-  { tamanho: "G", idade: "11 a 20 m", porDia: "5", fraldas: 1200 },
-  { tamanho: "XG", idade: "21 a 26 m", porDia: "4", fraldas: 720 },
-  { tamanho: "XXG", idade: "27 m +", porDia: "4", fraldas: 480 },
-];
 
 const LINHAS: [string, (c: (typeof CONSUMO)[number]) => string][] = [
   ["Idade", (c) => c.idade],
