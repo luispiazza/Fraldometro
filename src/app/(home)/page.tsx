@@ -92,9 +92,7 @@ export default function Inicio() {
 
           {/* B. A pilha */}
           <section data-fundo={FUNDO.lavanda} className="home-secao relative mx-auto grid max-w-6xl items-center gap-12 px-5 py-28 md:grid-cols-2">
-            <div aria-hidden className="pointer-events-none absolute right-0 bottom-0 -z-10 h-[150px] w-[300px] overflow-hidden md:-right-16">
-              <div className="home-nasce h-[300px] w-[300px] rounded-full bg-[#ffc531]" />
-            </div>
+            <div aria-hidden className="home-nasce pointer-events-none absolute -right-24 -bottom-36 -z-10 h-[300px] w-[300px] rounded-full bg-[#ffc531] md:-right-16" />
             <div className="home-surge grid gap-5">
               <h2 className={titulo2}>Um bebê usa umas 4.000 fraldas. Mais da metade é M e G.</h2>
               <p className={texto}>
@@ -153,9 +151,7 @@ export default function Inicio() {
 
           {/* Perguntas */}
           <section id="perguntas" data-fundo={FUNDO.creme} className="home-secao relative mx-auto grid max-w-6xl scroll-mt-6 gap-8 px-5 py-20">
-            <div aria-hidden className="pointer-events-none absolute -right-32 bottom-0 -z-10 h-[180px] w-[360px] overflow-hidden md:-right-20">
-              <div className="home-nasce h-[360px] w-[360px] rounded-full bg-[#b9a6ff]" />
-            </div>
+            <div aria-hidden className="home-nasce pointer-events-none absolute -bottom-44 -left-40 -z-10 h-[360px] w-[360px] rounded-full bg-[#b9a6ff] md:-left-24" />
             <h2 className={`home-surge ${titulo2}`}>Perguntas</h2>
             <div className="grid gap-3">
               {PERGUNTAS.map(({ p, r }) => (

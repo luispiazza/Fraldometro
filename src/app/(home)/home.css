@@ -84,7 +84,7 @@
 
 @keyframes home-nasce {
   from {
-    transform: translateY(100%);
+    transform: translateY(70%) scale(0.7);
   }
 }
 
@@ -132,7 +132,7 @@
       animation-range: 0px 900px;
     }
 
-    /* Os semicírculos nascem no pé da seção (o sol atrás da pilha, o lilás nas perguntas). */
+    /* Os círculos sobem do pé da seção (o sol atrás da pilha, o lilás nas perguntas). */
     .home-nasce {
       animation-name: home-nasce;
       animation-timing-function: ease-out;
