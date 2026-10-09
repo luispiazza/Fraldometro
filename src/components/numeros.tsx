@@ -10,7 +10,7 @@ export const pct = (parte: number, todo: number) => (todo ? `${Math.round((parte
 
 export function Cartao({ rotulo, valor, detalhe }: { rotulo: string; valor: string; detalhe?: string }) {
   return (
-    <div className="grid content-start gap-1 rounded-xl border border-line bg-surface p-5">
+    <div className="grid content-start gap-1 cartao p-5">
       <span className="text-sm text-muted">{rotulo}</span>
       <span className="text-2xl font-bold tracking-[-0.02em] tabular-nums">{valor}</span>
       {detalhe && <span className="text-sm text-muted">{detalhe}</span>}
@@ -20,7 +20,7 @@ export function Cartao({ rotulo, valor, detalhe }: { rotulo: string; valor: stri
 
 export function Lista({ titulo, itens }: { titulo: string; itens: [string, number][] }) {
   return (
-    <div className="grid content-start gap-3 rounded-xl border border-line bg-surface p-5">
+    <div className="grid content-start gap-3 cartao p-5">
       <h3 className="font-semibold">{titulo}</h3>
       <dl className="grid gap-1.5 text-sm">
         {itens.map(([rotulo, n]) => (
@@ -97,7 +97,7 @@ export function GraficoDiario({ dias }: { dias: { dia: string; centavos: number;
     `${diaCurto.format(new Date(d.dia))}: ${formatarReais(d.centavos)} · ${formatarNumero(d.doacoes)} doações`;
 
   return (
-    <figure className="grid gap-3 rounded-xl border border-line bg-surface p-5">
+    <figure className="grid gap-3 cartao p-5">
       <figcaption className="flex flex-wrap items-baseline justify-between gap-2">
         <span className="font-semibold">Arrecadado por dia</span>
         <span className="text-sm text-muted tabular-nums">{formatarReais(total)} em 30 dias</span>

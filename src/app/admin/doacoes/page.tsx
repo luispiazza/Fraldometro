@@ -19,7 +19,7 @@ export default async function AdminDoacoes({ searchParams }: PageProps<"/admin/d
 
   return (
     <div className="mx-auto grid max-w-5xl gap-6 px-4 py-12">
-      <h1 className="text-3xl font-bold tracking-[-0.02em]">Doações</h1>
+      <h1 className="titulo text-4xl leading-tight">Doações</h1>
       <div className="grid gap-3">
         <Abas base="/admin/doacoes" atual={status ?? ""} opcoes={FILTROS} />
         <Busca busca={busca} status={status} dica="Convidado, bebê ou link" />
@@ -28,7 +28,7 @@ export default async function AdminDoacoes({ searchParams }: PageProps<"/admin/d
       <p className="text-sm text-muted">{formatarNumero(doacoes.length)} Pix{doacoes.length === 200 && " (mostrando os 200 mais novos)"}</p>
 
       {doacoes.length > 0 && (
-        <ul className="grid divide-y divide-line rounded-xl border border-line bg-surface">
+        <ul className="grid divide-y divide-line cartao">
           {doacoes.map((d) => (
             <li key={d.id} className="grid gap-1 px-5 py-3">
               <span className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1">

@@ -28,7 +28,7 @@ export default async function NovaPagina() {
   return (
     <div className="mx-auto grid max-w-2xl gap-8 px-4 py-12">
       <div className="grid gap-2">
-        <h1 className="text-3xl font-bold tracking-[-0.02em]">Criar a página do bebê</h1>
+        <h1 className="titulo text-4xl leading-tight">Criar a página do bebê</h1>
         <p className="text-muted">Dá para mudar tudo depois. A página só vai ao ar quando vocês publicarem.</p>
       </div>
       <FormPagina inicial={INICIAL} userId={perfil.id} dominio={dominio} acao={criarPagina} textoBotao="Criar a página" />

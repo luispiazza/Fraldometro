@@ -19,7 +19,7 @@ export default async function AdminPaginas({ searchParams }: PageProps<"/admin/p
 
   return (
     <div className="mx-auto grid max-w-5xl gap-6 px-4 py-12">
-      <h1 className="text-3xl font-bold tracking-[-0.02em]">Páginas</h1>
+      <h1 className="titulo text-4xl leading-tight">Páginas</h1>
       <div className="grid gap-3">
         <Abas base="/admin/paginas" atual={status ?? ""} opcoes={FILTROS} />
         <Busca busca={busca} status={status} dica="Bebê, link, dono ou e-mail" />
@@ -28,7 +28,7 @@ export default async function AdminPaginas({ searchParams }: PageProps<"/admin/p
       <p className="text-sm text-muted">{formatarNumero(paginas.length)} páginas{paginas.length === 200 && " (mostrando as 200 mais novas)"}</p>
 
       {paginas.length > 0 && (
-        <ul className="grid divide-y divide-line rounded-xl border border-line bg-surface">
+        <ul className="grid divide-y divide-line cartao">
           {paginas.map((p) => (
             <li key={p.id} className="grid gap-3 px-5 py-4 sm:grid-cols-[1fr_220px_120px] sm:items-center">
               <span className="grid min-w-0 gap-0.5">

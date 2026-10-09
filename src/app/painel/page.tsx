@@ -13,15 +13,15 @@ export default async function Painel() {
 
   return (
     <div className="mx-auto grid max-w-5xl gap-8 px-4 py-12">
-      <h1 className="text-3xl font-bold tracking-[-0.02em]">Oi, {perfil.nome.split(" ")[0]}</h1>
+      <h1 className="titulo text-4xl leading-tight">Oi, {perfil.nome.split(" ")[0]}</h1>
 
       {minhas.length === 0 ? (
-        <section className="grid max-w-xl justify-items-start gap-3 rounded-xl border border-line bg-surface p-6">
-          <h2 className="text-xl font-semibold">Vamos criar a página do bebê?</h2>
+        <section className="grid max-w-xl justify-items-start gap-3 cartao p-6">
+          <h2 className="titulo text-2xl">Vamos criar a página do bebê?</h2>
           <p className="text-muted">
             Nome, foto, recado e a meta de fraldas. Depois é só mandar o link no grupo da família.
           </p>
-          <Link href="/painel/nova" className="rounded-full bg-fg px-5 py-3 font-semibold text-bg">
+          <Link href="/painel/nova" className="titulo inline-flex items-center justify-center rounded-2xl border-[2.5px] border-fg bg-brand px-5 py-3.5 text-lg leading-none text-fg shadow-[4px_4px_0_var(--fg)]">
             Criar a página
           </Link>
         </section>
@@ -32,7 +32,7 @@ export default async function Painel() {
               <li key={p.id}>
                 <Link
                   href={`/painel/paginas/${p.id}`}
-                  className="grid h-full content-start gap-3 rounded-xl border border-line bg-surface p-5 hover:border-fg"
+                  className="grid h-full content-start gap-3 cartao p-5 hover:border-fg"
                 >
                   <span className="grid gap-1">
                     <span className="flex items-center justify-between gap-3">

@@ -1,28 +1,18 @@
 @import "tailwindcss";
 @import "../themes/temas.css";
 
-/* Marca institucional: preto e branco com um único laranja de assinatura. */
+/* Marca: o visual do tema Recortes. Creme, tinta, laranja, bordas grossas e sombra chapada. */
 :root {
-  --bg: #f5f5f3; /* Algodão */
-  --surface: #ffffff; /* Fralda */
-  --fg: #1b1a22; /* Tinta */
-  --muted: #62616c;
-  --line: #e2e1dc;
-  --brand: #ff6a3d; /* Laranja */
-  --chip: #efeee9;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #121116;
-    --surface: #1b1a21;
-    --fg: #eeedf2;
-    --muted: #a3a2ad;
-    --line: #2d2c35;
-    --brand: #ff8a63;
-    --chip: #25242c;
-    color-scheme: dark;
-  }
+  --bg: #fff6ef; /* Creme */
+  --surface: #ffffff;
+  --fg: #26211f; /* Tinta */
+  --muted: #6b5f58;
+  --line: #ffe1d3; /* divisórias suaves; bordas fortes usam --fg */
+  --brand: #ff5a36; /* Laranja */
+  --chip: #ffe1d3;
+  --lilas: #b9a6ff;
+  --amarelo: #ffc531;
+  --azul: #7cc6ff;
 }
 
 @theme inline {
@@ -33,11 +23,29 @@
   --color-line: var(--line);
   --color-brand: var(--brand);
   --color-chip: var(--chip);
-  --font-sans: var(--font-instrument-sans), ui-sans-serif, system-ui, sans-serif;
+  --color-lilas: var(--lilas);
+  --color-amarelo: var(--amarelo);
+  --color-azul: var(--azul);
+  --font-sans: var(--font-nunito), ui-sans-serif, system-ui, sans-serif;
 }
 
 body {
   background: var(--bg);
   color: var(--fg);
   font-family: var(--font-sans);
+}
+
+/* Títulos em Bagel Fat One, que só tem um peso. */
+@utility titulo {
+  font-family: var(--font-bagel), var(--font-nunito), sans-serif;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
+/* Cartão do tema Recortes: borda de tinta e sombra chapada. */
+@utility cartao {
+  background-color: var(--surface);
+  border: 2.5px solid var(--fg);
+  border-radius: 20px;
+  box-shadow: 4px 4px 0 var(--fg);
 }

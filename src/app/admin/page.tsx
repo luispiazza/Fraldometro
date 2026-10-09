@@ -16,10 +16,10 @@ export default async function Admin() {
 
   return (
     <div className="mx-auto grid max-w-5xl gap-10 px-4 py-12">
-      <h1 className="text-3xl font-bold tracking-[-0.02em]">Visão geral</h1>
+      <h1 className="titulo text-4xl leading-tight">Visão geral</h1>
 
       <section className="grid gap-3">
-        <h2 className="text-lg font-semibold">Últimos 30 dias</h2>
+        <h2 className="titulo text-xl">Últimos 30 dias</h2>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           <Cartao rotulo="Arrecadado" valor={formatarReais(d.arrecadado30)} detalhe={`${formatarNumero(d.pagas30)} doações`} />
           <Cartao rotulo="Comissão" valor={formatarReais(d.comissao30)} />
@@ -67,7 +67,7 @@ export default async function Admin() {
       </section>
 
       <section className="grid gap-3">
-        <h2 className="text-lg font-semibold">Desde o começo</h2>
+        <h2 className="titulo text-xl">Desde o começo</h2>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           <Cartao rotulo="Arrecadado" valor={formatarReais(d.arrecadado)} detalhe={`${formatarNumero(d.pagas)} doações`} />
           <Cartao
@@ -119,11 +119,11 @@ export default async function Admin() {
       </section>
 
       <section className="grid gap-3">
-        <h2 className="text-lg font-semibold">Páginas com mais fraldas</h2>
+        <h2 className="titulo text-xl">Páginas com mais fraldas</h2>
         {maiores.length === 0 ? (
           <p className="text-muted">Nenhuma doação paga ainda.</p>
         ) : (
-          <ol className="grid divide-y divide-line rounded-xl border border-line bg-surface">
+          <ol className="grid divide-y divide-line cartao">
             {maiores.map((m) => (
               <li key={m.id} className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 px-5 py-3">
                 <span className="grid">
@@ -151,7 +151,7 @@ function Recentes({ titulo, href, vazio, children }: { titulo: string; href: str
   return (
     <div className="grid content-start gap-3">
       <div className="flex items-baseline justify-between">
-        <h2 className="text-lg font-semibold">{titulo}</h2>
+        <h2 className="titulo text-xl">{titulo}</h2>
         <Link href={href} className="text-sm font-semibold hover:text-brand">
           Ver todas
         </Link>
@@ -159,7 +159,7 @@ function Recentes({ titulo, href, vazio, children }: { titulo: string; href: str
       {children.length === 0 ? (
         <p className="text-muted">{vazio}</p>
       ) : (
-        <ul className="grid divide-y divide-line rounded-xl border border-line bg-surface">{children}</ul>
+        <ul className="grid divide-y divide-line cartao">{children}</ul>
       )}
     </div>
   );

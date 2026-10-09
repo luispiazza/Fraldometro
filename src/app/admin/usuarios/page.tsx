@@ -11,13 +11,13 @@ export default async function AdminUsuarios({ searchParams }: PageProps<"/admin/
 
   return (
     <div className="mx-auto grid max-w-5xl gap-6 px-4 py-12">
-      <h1 className="text-3xl font-bold tracking-[-0.02em]">Usuários</h1>
+      <h1 className="titulo text-4xl leading-tight">Usuários</h1>
       <Busca busca={busca} dica="Nome ou e-mail" />
 
       <p className="text-sm text-muted">{formatarNumero(usuarios.length)} usuários{usuarios.length === 200 && " (mostrando os 200 mais novos)"}</p>
 
       {usuarios.length > 0 && (
-        <ul className="grid divide-y divide-line rounded-xl border border-line bg-surface">
+        <ul className="grid divide-y divide-line cartao">
           {usuarios.map((u) => (
             <li key={u.id} className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 px-5 py-3">
               <span className="grid min-w-0">

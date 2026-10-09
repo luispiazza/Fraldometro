@@ -26,7 +26,7 @@ export default async function AdminPagina({ params }: PageProps<"/admin/paginas/
           ← Páginas
         </Link>
         <div className="flex flex-wrap items-center gap-3">
-          <h1 className="text-3xl font-bold tracking-[-0.02em]">{pagina.nomeBebe}</h1>
+          <h1 className="titulo text-4xl leading-tight">{pagina.nomeBebe}</h1>
           <Selo status={pagina.status} texto={STATUS_PAGINA[pagina.status]} />
         </div>
         <p className="text-muted">
@@ -42,7 +42,7 @@ export default async function AdminPagina({ params }: PageProps<"/admin/paginas/
       </div>
 
       <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        <div className="grid content-start gap-2 rounded-xl border border-line bg-surface p-5">
+        <div className="grid content-start gap-2 cartao p-5">
           <span className="text-sm text-muted">Fraldas</span>
           <Progresso total={soma("fraldas")} meta={pagina.metaFraldas} />
         </div>
@@ -52,8 +52,8 @@ export default async function AdminPagina({ params }: PageProps<"/admin/paginas/
       </section>
 
       <section className="grid gap-3 sm:grid-cols-2">
-        <div className="grid content-start gap-2 rounded-xl border border-line bg-surface p-5">
-          <h2 className="font-semibold">Quem administra</h2>
+        <div className="grid content-start gap-2 cartao p-5">
+          <h2 className="titulo text-lg">Quem administra</h2>
           {membros.length === 0 && <p className="text-sm text-muted">Ninguém.</p>}
           {membros.map((m) => (
             <div key={m.id} className="grid text-sm">
@@ -67,8 +67,8 @@ export default async function AdminPagina({ params }: PageProps<"/admin/paginas/
             </div>
           ))}
         </div>
-        <div className="grid content-start gap-2 rounded-xl border border-line bg-surface p-5">
-          <h2 className="font-semibold">Conta Mercado Pago</h2>
+        <div className="grid content-start gap-2 cartao p-5">
+          <h2 className="titulo text-lg">Conta Mercado Pago</h2>
           {conta ? (
             <div className="grid text-sm">
               <span className="font-semibold">{conta.titular}</span>
@@ -84,11 +84,11 @@ export default async function AdminPagina({ params }: PageProps<"/admin/paginas/
       </section>
 
       <section className="grid gap-3">
-        <h2 className="text-lg font-semibold">Doações ({formatarNumero(doacoes.length)})</h2>
+        <h2 className="titulo text-xl">Doações ({formatarNumero(doacoes.length)})</h2>
         {doacoes.length === 0 ? (
           <p className="text-muted">Nenhum Pix gerado ainda.</p>
         ) : (
-          <ul className="grid divide-y divide-line rounded-xl border border-line bg-surface">
+          <ul className="grid divide-y divide-line cartao">
             {doacoes.map((d) => (
               <li key={d.id} className="grid gap-1 px-5 py-3">
                 <span className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1">

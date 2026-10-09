@@ -31,7 +31,7 @@ export default async function ContaDaFamilia({ params, searchParams }: PageProps
         ← {pagina.nomeBebe}
       </Link>
       <div className="grid gap-2">
-        <h1 className="text-3xl font-bold tracking-[-0.02em]">Conta da família</h1>
+        <h1 className="titulo text-4xl leading-tight">Conta da família</h1>
         <p className="text-muted">
           O Pix dos convidados cai direto na conta Mercado Pago de vocês. O Fraldômetro não guarda o dinheiro nem os
           dados bancários.
@@ -39,7 +39,7 @@ export default async function ContaDaFamilia({ params, searchParams }: PageProps
       </div>
 
       {!conta ? (
-        <section className="grid gap-4 rounded-xl border border-line bg-surface p-5">
+        <section className="grid gap-4 cartao p-5">
           <ol className="grid list-decimal gap-2 pl-5 text-sm">
             <li>Entre na conta Mercado Pago de quem vai receber (ou crie uma, é grátis).</li>
             <li>Autorize o Fraldômetro a gerar cobranças Pix em nome de vocês.</li>
@@ -59,7 +59,7 @@ export default async function ContaDaFamilia({ params, searchParams }: PageProps
           )}
         </section>
       ) : (
-        <section className="grid gap-3 rounded-xl border border-line bg-surface p-5">
+        <section className="grid gap-3 cartao p-5">
           <span className="justify-self-start rounded-full bg-chip px-3 py-1 text-sm font-semibold">Conta conectada</span>
           <p className="text-sm">
             Em nome de <b>{conta.titular}</b>. O nome aparece para quem paga o Pix.

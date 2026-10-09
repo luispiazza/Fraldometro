@@ -1,17 +1,17 @@
 // Peças de formulário do site e do painel.
 
 export const campo =
-  "w-full rounded-lg border-[1.5px] border-line bg-surface px-3.5 py-3 text-base outline-none focus:border-fg";
+  "w-full rounded-xl border-[2.5px] border-fg bg-surface px-3.5 py-3 text-base outline-none focus:shadow-[3px_3px_0_var(--fg)]";
 
 export const botao =
-  "rounded-full bg-fg px-5 py-3 font-semibold text-bg disabled:opacity-50";
+  "titulo inline-flex items-center justify-center rounded-2xl border-[2.5px] border-fg bg-brand px-5 py-3.5 text-lg leading-none text-fg shadow-[4px_4px_0_var(--fg)] disabled:opacity-50";
 
 export const botaoSecundario =
-  "rounded-full border border-line bg-surface px-5 py-3 font-semibold disabled:opacity-50";
+  "inline-flex items-center justify-center rounded-2xl border-[2.5px] border-fg bg-surface px-5 py-3 font-extrabold leading-none disabled:opacity-50";
 
 export function Rotulo({ texto, children }: { texto: string; children: React.ReactNode }) {
   return (
-    <label className="grid gap-1.5 text-sm font-semibold">
+    <label className="grid gap-1.5 text-sm font-extrabold">
       {texto}
       {children}
     </label>

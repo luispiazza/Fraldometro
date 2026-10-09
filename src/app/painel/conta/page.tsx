@@ -12,7 +12,7 @@ export default async function Conta() {
   return (
     <div className="mx-auto grid max-w-md gap-8 px-4 py-12">
       <div className="grid gap-2">
-        <h1 className="text-3xl font-bold tracking-[-0.02em]">Minha conta</h1>
+        <h1 className="titulo text-4xl leading-tight">Minha conta</h1>
         <p className="text-muted">
           Você entra com <strong className="text-fg">{perfil.email}</strong>.
         </p>

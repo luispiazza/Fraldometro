@@ -1,31 +1,42 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { botao, botaoSecundario } from "@/components/campos";
 import { PERGUNTAS } from "@/lib/perguntas";
 
 export const metadata: Metadata = { title: "Como funciona" };
 
 export default function ComoFunciona() {
   return (
-    <div className="mx-auto grid max-w-3xl gap-10 px-4 py-14">
+    <div className="mx-auto grid max-w-3xl gap-10 px-5 pt-8 pb-20">
       <header className="grid gap-4">
-        <h1 className="text-[clamp(30px,5vw,46px)] leading-[1.05] font-bold tracking-[-0.02em] text-balance">Como funciona</h1>
+        <h1 className="titulo text-[clamp(36px,5vw,56px)] leading-[1.04] text-balance">Como funciona</h1>
         <p className="text-lg text-muted">
           Vocês criam a página do bebê, mandam o link e acompanham as fraldas doadas subirem no fraldômetro.
         </p>
       </header>
 
-      <dl className="grid gap-6">
+      <div className="grid gap-3">
         {PERGUNTAS.map(({ p, r }) => (
-          <div key={p} className="grid gap-1.5 border-b border-line pb-6">
-            <dt className="text-lg font-semibold">{p}</dt>
-            <dd className="text-muted">{r}</dd>
-          </div>
+          <details key={p} className="cartao group p-5 [&_summary::-webkit-details-marker]:hidden">
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-lg font-extrabold">
+              {p}
+              <span aria-hidden className="titulo text-2xl leading-none transition-transform group-open:rotate-45">
+                +
+              </span>
+            </summary>
+            <p className="mt-3 leading-relaxed text-muted">{r}</p>
+          </details>
         ))}
-      </dl>
+      </div>
 
-      <Link href="/exemplo/placar" className="justify-self-start rounded-full bg-fg px-5 py-3 font-semibold text-bg">
-        Ver uma página de exemplo
-      </Link>
+      <div className="flex flex-wrap gap-3">
+        <Link href="/entrar" className={botao}>
+          Criar a página do bebê
+        </Link>
+        <Link href="/exemplo/recortes" className={botaoSecundario}>
+          Ver um exemplo
+        </Link>
+      </div>
     </div>
   );
 }

@@ -44,11 +44,11 @@ export default async function EditarPagina({ params, searchParams }: PageProps<"
   return (
     <div className="mx-auto grid max-w-2xl gap-8 px-4 py-12">
       <div className="grid gap-2">
-        <h1 className="text-3xl font-bold tracking-[-0.02em]">{pagina.nomeBebe}</h1>
+        <h1 className="titulo text-4xl leading-tight">{pagina.nomeBebe}</h1>
         {criada && <p className="text-muted">Página criada! Confira a prévia e ajuste o que quiser.</p>}
       </div>
 
-      <section className="grid gap-3 rounded-xl border border-line bg-chip p-5">
+      <section className="grid gap-3 cartao !bg-chip p-5">
         <div className="flex flex-wrap items-center gap-2">
           <span className="rounded-full bg-surface px-3 py-1 text-sm font-semibold">{noAr ? "No ar" : "Rascunho"}</span>
           <span className="text-sm text-muted">{noAr ? `${dominio}/${pagina.slug}` : "Só vocês veem."}</span>
@@ -73,8 +73,8 @@ export default async function EditarPagina({ params, searchParams }: PageProps<"
 
       {(noAr || doacoes.length > 0) && (
         <section className="grid gap-3">
-          <h2 className="text-xl font-semibold">Como está indo</h2>
-          <div className="grid content-start gap-2 rounded-xl border border-line bg-surface p-5">
+          <h2 className="titulo text-2xl">Como está indo</h2>
+          <div className="grid content-start gap-2 cartao p-5">
             <span className="text-sm text-muted">Fraldas</span>
             <Progresso total={resumo.fraldas} meta={pagina.metaFraldas} />
             {resumo.fraldas > 0 && (
@@ -102,11 +102,11 @@ export default async function EditarPagina({ params, searchParams }: PageProps<"
 
       {(noAr || doacoes.length > 0) && (
         <section className="grid gap-3">
-          <h2 className="text-xl font-semibold">Quem doou</h2>
+          <h2 className="titulo text-2xl">Quem doou</h2>
           {doacoes.length === 0 ? (
             <p className="text-muted">Ninguém ainda. Mande o link no grupo da família!</p>
           ) : (
-            <ul className="grid max-h-[480px] divide-y divide-line overflow-y-auto rounded-xl border border-line bg-surface">
+            <ul className="grid max-h-[480px] divide-y divide-line overflow-y-auto cartao">
               {doacoes.map((d) => (
                 <li key={d.id} className="grid gap-1 px-5 py-3">
                   <span className="flex flex-wrap items-baseline justify-between gap-x-4">
@@ -125,7 +125,7 @@ export default async function EditarPagina({ params, searchParams }: PageProps<"
         </section>
       )}
 
-      <h2 className="-mb-4 text-xl font-semibold">Editar a página</h2>
+      <h2 className="titulo -mb-4 text-2xl">Editar a página</h2>
       <FormPagina
         inicial={{
           nomeBebe: pagina.nomeBebe,

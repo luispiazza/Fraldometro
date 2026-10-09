@@ -9,9 +9,9 @@ export default async function Entrar({ searchParams }: PageProps<"/entrar">) {
   if (await usuarioAtual()) redirect((await perfilAtual()) ? "/painel" : "/entrar/perfil");
 
   return (
-    <div className="mx-auto grid max-w-md gap-6 px-4 py-14">
+    <div className="cartao mx-auto my-10 grid w-[calc(100%-2.5rem)] max-w-md gap-6 p-6 sm:p-8">
       <div className="grid gap-2">
-        <h1 className="text-3xl font-bold tracking-[-0.02em]">Entrar ou criar conta</h1>
+        <h1 className="titulo text-4xl leading-tight">Entrar ou criar conta</h1>
         <p className="text-muted">Sem senha: mandamos um código para o seu e-mail.</p>
       </div>
       {(await searchParams).erro === "link" && (

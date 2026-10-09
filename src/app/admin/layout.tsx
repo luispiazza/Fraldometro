@@ -18,7 +18,7 @@ export default async function AdminLayout({ children }: LayoutProps<"/admin">) {
 
   return (
     <>
-      <header className="border-b border-line bg-surface">
+      <header className="border-b-[2.5px] border-fg bg-surface">
         <nav className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-4">
           <Link href="/admin" className="flex items-center gap-2 text-xl">
             <Logo />

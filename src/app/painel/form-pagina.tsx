@@ -30,7 +30,7 @@ const SEXOS: { id: Sexo; nome: string }[] = [
 
 function Secao({ titulo, children }: { titulo: string; children: React.ReactNode }) {
   return (
-    <fieldset className="grid gap-4 rounded-xl border border-line bg-surface p-5">
+    <fieldset className="grid gap-4 cartao p-5">
       <legend className="px-1 text-lg font-semibold">{titulo}</legend>
       {children}
     </fieldset>
