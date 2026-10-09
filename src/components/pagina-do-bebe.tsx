@@ -22,12 +22,12 @@ export type DadosPagina = {
 };
 
 const CONSUMO = [
-  { tamanho: "RN", idade: "0 a 40 dias", porDia: "8 a 7", fraldas: 320 },
+  { tamanho: "RN", idade: "0 a 40 dias", porDia: "7 a 8", fraldas: 320 },
   { tamanho: "P", idade: "2 a 4 m", porDia: "6", fraldas: 440 },
   { tamanho: "M", idade: "5 a 10 m", porDia: "5", fraldas: 920 },
   { tamanho: "G", idade: "11 a 20 m", porDia: "5", fraldas: 1200 },
   { tamanho: "XG", idade: "21 a 26 m", porDia: "4", fraldas: 720 },
-  { tamanho: "XXG", idade: "26 m +", porDia: "4", fraldas: 480 },
+  { tamanho: "XXG", idade: "27 m +", porDia: "4", fraldas: 480 },
 ];
 
 const LINHAS: [string, (c: (typeof CONSUMO)[number]) => string][] = [
@@ -93,7 +93,7 @@ export function PaginaDoBebe({ dados, acaoDoar }: { dados: DadosPagina; acaoDoar
         <Doar valorFraldaCentavos={dados.valorFraldaCentavos} acao={acaoDoar} />
 
         <section className="grid gap-3">
-          <h2 className="tema-display text-[22px] leading-tight">Por que {formatarNumero(dados.metaFraldas)}?</h2>
+          <h2 className="tema-display text-[22px] leading-tight">Quantas fraldas um bebê usa?</h2>
           <div className="overflow-x-auto">
             <table className="w-full border-collapse text-sm tabular-nums">
               <thead>

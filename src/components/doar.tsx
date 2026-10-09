@@ -20,7 +20,7 @@ export function Doar({ valorFraldaCentavos, acao }: { valorFraldaCentavos: numbe
     acao ?? (async () => ({ erro: "Na prévia o Pix não é gerado." })),
     {},
   );
-  const { taxa, totalPago, paraOsPais } = calcularDoacao(fraldas, valorFraldaCentavos, cobrirTaxa);
+  const { taxa, totalPago } = calcularDoacao(fraldas, valorFraldaCentavos, cobrirTaxa);
   const dias = diasDeFralda(fraldas);
 
   return (
@@ -62,11 +62,11 @@ export function Doar({ valorFraldaCentavos, acao }: { valorFraldaCentavos: numbe
           className="mt-1 h-[18px] w-[18px] flex-none accent-[var(--t-accent)]"
         />
         <span>
-          Quero que os pais recebam tudo
+          Quero cobrir a taxa do Fraldômetro
           <small className="block text-[13px] text-[var(--t-muted)]">
             {cobrirTaxa
-              ? `Somo ${formatarReais(taxa)} para cobrir a taxa do Fraldômetro.`
-              : `Sem marcar, os pais recebem ${formatarReais(paraOsPais)}.`}
+              ? `+ ${formatarReais(taxa)}, para a taxa não sair das fraldas.`
+              : `Sem marcar, os ${formatarReais(taxa)} saem do valor doado.`}
           </small>
         </span>
       </label>

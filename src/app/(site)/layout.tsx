@@ -26,7 +26,7 @@ export default function SiteLayout({ children }: LayoutProps<"/">) {
       <footer className="border-t border-line">
         <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-3 px-4 py-6 text-sm text-muted">
           <Logo />
-          <span>Fraldas doadas via Pix, direto para a conta da família.</span>
+          <span>Fraldas doadas via Pix, direto para a conta Mercado Pago da família.</span>
         </div>
       </footer>
     </>

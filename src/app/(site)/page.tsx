@@ -2,9 +2,9 @@ import Link from "next/link";
 import { TEMAS } from "@/themes";
 
 const PASSOS = [
-  { titulo: "Crie a página do bebê", texto: "Nome, foto, recado e a meta de fraldas. Leva poucos minutos." },
+  { titulo: "Crie a página do bebê", texto: "Nome, foto, recado e a meta de fraldas. Depois, é só conectar a conta Mercado Pago de vocês." },
   { titulo: "Mande o link no grupo", texto: "Amigos e família abrem no celular e escolhem quantas fraldas doar." },
-  { titulo: "O Pix cai na conta de vocês", texto: "Cada doação vai direto para a família, e o fraldômetro sobe na hora." },
+  { titulo: "O Pix cai no Mercado Pago de vocês", texto: "Cada doação vai direto para a conta da família, e o fraldômetro sobe na hora." },
 ];
 
 export default function Inicio() {
